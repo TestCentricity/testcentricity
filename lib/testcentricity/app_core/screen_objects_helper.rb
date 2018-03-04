@@ -1,0 +1,296 @@
+require 'test/unit'
+
+module TestCentricity
+  class ScreenObject
+    include Test::Unit::Assertions
+
+    attr_reader :locator
+
+    def initialize
+      raise "Screen object #{self.class.name} does not have a page_name trait defined" unless defined?(page_name)
+      @locator = page_locator if defined?(page_locator)
+    end
+
+    def self.trait(trait_name, &block)
+      define_method(trait_name.to_s, &block)
+    end
+
+    def self.element(element_name, locator)
+      class_eval(%(def #{element_name};@#{element_name} ||= TestCentricity::AppUIElement.new("#{element_name}", self, #{locator}, :page);end))
+    end
+
+    def self.elements(element_hash)
+      element_hash.each do |element_name, locator|
+        element(element_name, locator)
+      end
+    end
+
+    def self.button(element_name, locator)
+      class_eval(%(def #{element_name};@#{element_name} ||= TestCentricity::AppButton.new("#{element_name}", self, #{locator}, :page);end))
+    end
+
+    def self.buttons(element_hash)
+      element_hash.each do |element_name, locator|
+        button(element_name, locator)
+      end
+    end
+
+    def self.textfield(element_name, locator)
+      class_eval(%(def #{element_name};@#{element_name} ||= TestCentricity::AppTextField.new("#{element_name}", self, #{locator}, :page);end))
+    end
+
+    def self.textfields(element_hash)
+      element_hash.each do |element_name, locator|
+        textfield(element_name, locator)
+      end
+    end
+
+    def self.switch(element_name, locator)
+      class_eval(%(def #{element_name};@#{element_name} ||= TestCentricity::AppSwitch.new("#{element_name}", self, #{locator}, :page);end))
+    end
+
+    def self.switches(element_hash)
+      element_hash.each do |element_name, locator|
+        switch(element_name, locator)
+      end
+    end
+
+    def self.checkbox(element_name, locator)
+      class_eval(%(def #{element_name};@#{element_name} ||= TestCentricity::AppCheckBox.new("#{element_name}", self, #{locator}, :page);end))
+    end
+
+    def self.checkboxes(element_hash)
+      element_hash.each do |element_name, locator|
+        checkbox(element_name, locator)
+      end
+    end
+
+    def self.label(element_name, locator)
+      class_eval(%(def #{element_name};@#{element_name} ||= TestCentricity::AppLabel.new("#{element_name}", self, #{locator}, :page);end))
+    end
+
+    def self.labels(element_hash)
+      element_hash.each do |element_name, locator|
+        label(element_name, locator)
+      end
+    end
+
+    def self.list(element_name, locator)
+      class_eval(%(def #{element_name};@#{element_name} ||= TestCentricity::AppList.new("#{element_name}", self, #{locator}, :page);end))
+    end
+
+    def self.lists(element_hash)
+      element_hash.each do |element_name, locator|
+        list(element_name, locator)
+      end
+    end
+
+    def self.selectlist(element_name, locator)
+      class_eval(%(def #{element_name};@#{element_name} ||= TestCentricity::AppSelectList.new("#{element_name}", self, #{locator}, :page);end))
+    end
+
+    def self.selectlists(element_hash)
+      element_hash.each do |element_name, locator|
+        selectlist(element_name, locator)
+      end
+    end
+
+    def self.image(element_name, locator)
+      class_eval(%(def #{element_name};@#{element_name} ||= TestCentricity::AppImage.new("#{element_name}", self, #{locator}, :page);end))
+    end
+
+    def self.images(element_hash)
+      element_hash.each do |element_name, locator|
+        image(element_name, locator)
+      end
+    end
+
+    def self.alert(element_name, locator)
+      class_eval(%(def #{element_name};@#{element_name} ||= TestCentricity::AppAlert.new("#{element_name}", self, #{locator}, :page);end))
+    end
+
+    def self.section(section_name, class_name)
+      class_eval(%(def #{section_name};@#{section_name} ||= #{class_name}.new("#{section_name}", self, :page);end))
+    end
+
+    def self.sections(section_hash)
+      section_hash.each do |section_name, class_name|
+        section(section_name, class_name)
+      end
+    end
+
+
+    def open_portal
+      environment = Environ.current
+
+      Environ.portal_state = :open
+    end
+
+    def verify_page_exists
+      wait = Selenium::WebDriver::Wait.new(timeout: Environ.default_max_wait_time)
+      wait.until { exists? }
+      PageManager.current_page = self
+    rescue
+      raise "Could not find page_locator for screen object '#{self.class.name}' (#{@locator}) after #{Environ.default_max_wait_time} seconds"
+    end
+
+    def exists?
+      @locator.is_a?(Array) ? tries ||= 2 : tries ||= 1
+      if @locator.is_a?(Array)
+        loc = @locator[tries - 1]
+        find_element(loc.keys[0], loc.values[0])
+      else
+        find_element(@locator.keys[0], @locator.values[0])
+      end
+      true
+    rescue
+      retry if (tries -= 1) > 0
+      false
+    end
+
+    def wait_until_exists(seconds = nil)
+      timeout = seconds.nil? ? Environ.default_max_wait_time : seconds
+      wait = Selenium::WebDriver::Wait.new(timeout: timeout)
+      wait.until { exists? }
+    rescue
+      raise "Screen object #{self.class.name} not found after #{timeout} seconds" unless exists?
+    end
+
+    def wait_until_gone(seconds = nil)
+      timeout = seconds.nil? ? Environ.default_max_wait_time : seconds
+      wait = Selenium::WebDriver::Wait.new(timeout: timeout)
+      wait.until { !exists? }
+    rescue
+      raise "Screen object #{self.class.name} remained visible after #{timeout} seconds" if exists?
+    end
+
+    def navigate_to; end
+
+    def verify_page_ui; end
+
+    def load_page
+      navigate_to unless exists?
+      verify_page_exists
+      PageManager.current_page = self
+    end
+
+
+
+    def verify_ui_states(ui_states)
+      ui_states.each do |ui_object, object_states|
+        object_states.each do |property, state|
+
+          puts "#{ui_object.get_name} - #{property} = #{state}" if ENV['DEBUG']
+
+          case property
+          when :exists
+            actual = ui_object.exists?
+          when :enabled
+            actual = ui_object.enabled?
+          when :disabled
+            actual = ui_object.disabled?
+          when :visible
+            actual = ui_object.visible?
+          when :hidden
+            actual = ui_object.hidden?
+          when :checked
+            actual = ui_object.checked?
+          when :selected
+            actual = ui_object.selected?
+          when :value
+            actual = ui_object.get_value
+          when :caption
+            actual = ui_object.get_caption
+          when :name
+            actual = ui_object.tag_name
+          when :placeholder
+            actual = ui_object.get_placeholder
+          when :readonly
+            actual = ui_object.read_only?
+          when :maxlength
+            actual = ui_object.get_max_length
+          when :items
+            actual = ui_object.get_list_items
+          when :itemcount
+            actual = ui_object.get_item_count
+          when :width
+            actual = ui_object.width
+          when :height
+            actual = ui_object.height
+          when :x
+            actual = ui_object.x_loc
+          when :y
+            actual = ui_object.y_loc
+          end
+
+          if state.is_a?(Hash) && state.length == 1
+            error_msg = "Expected UI object '#{ui_object.get_name}' (#{ui_object.get_locator}) #{property} property to"
+            state.each do |key, value|
+              case key
+              when :lt, :less_than
+                ExceptionQueue.enqueue_exception("#{error_msg} be less than #{value} but found '#{actual}'") unless actual < value
+              when :lt_eq, :less_than_or_equal
+                ExceptionQueue.enqueue_exception("#{error_msg} be less than or equal to #{value} but found '#{actual}'") unless actual <= value
+              when :gt, :greater_than
+                ExceptionQueue.enqueue_exception("#{error_msg} be greater than #{value} but found '#{actual}'") unless actual > value
+              when :gt_eq, :greater_than_or_equal
+                ExceptionQueue.enqueue_exception("#{error_msg} be greater than or equal to  #{value} but found '#{actual}'") unless actual >= value
+              when :starts_with
+                ExceptionQueue.enqueue_exception("#{error_msg} start with '#{value}' but found '#{actual}'") unless actual.start_with?(value)
+              when :ends_with
+                ExceptionQueue.enqueue_exception("#{error_msg} end with '#{value}' but found '#{actual}'") unless actual.end_with?(value)
+              when :contains
+                ExceptionQueue.enqueue_exception("#{error_msg} contain '#{value}' but found '#{actual}'") unless actual.include?(value)
+              when :not_contains, :does_not_contain
+                ExceptionQueue.enqueue_exception("#{error_msg} not contain '#{value}' but found '#{actual}'") if actual.include?(value)
+              when :not_equal
+                ExceptionQueue.enqueue_exception("#{error_msg} not equal '#{value}' but found '#{actual}'") if actual == value
+              when :like, :is_like
+                actual_like = actual.delete("\n")
+                actual_like = actual_like.delete("\r")
+                actual_like = actual_like.delete("\t")
+                actual_like = actual_like.delete(' ')
+                actual_like = actual_like.downcase
+                expected    = value.delete("\n")
+                expected    = expected.delete("\r")
+                expected    = expected.delete("\t")
+                expected    = expected.delete(' ')
+                expected    = expected.downcase
+                ExceptionQueue.enqueue_exception("#{error_msg} be like '#{value}' but found '#{actual}'") unless actual_like.include?(expected)
+              when :translate
+                expected = I18n.t(value)
+                ExceptionQueue.enqueue_assert_equal(expected, actual, "Expected UI object '#{ui_object.get_name}' (#{ui_object.get_locator}) translated #{property} property")
+              end
+            end
+          else
+            ExceptionQueue.enqueue_assert_equal(state, actual, "Expected UI object '#{ui_object.get_name}' (#{ui_object.get_locator}) #{property} property")
+          end
+        end
+      end
+    rescue ObjectNotFoundError => e
+      ExceptionQueue.enqueue_exception(e.message)
+    ensure
+      ExceptionQueue.post_exceptions
+    end
+
+    def populate_data_fields(data, wait_time = nil)
+      timeout = wait_time.nil? ? 5 : wait_time
+      data.each do |data_field, data_param|
+        unless data_param.blank?
+          # make sure the intended UI target element is visible before trying to set its value
+          data_field.wait_until_visible(timeout)
+          if data_param == '!DELETE'
+            data_field.clear
+          else
+            case data_field.get_object_type
+            when :checkbox
+              data_field.set_checkbox_state(data_param.to_bool)
+            when :textfield
+              data_field.set("#{data_param}\t")
+            end
+          end
+        end
+      end
+    end
+  end
+end

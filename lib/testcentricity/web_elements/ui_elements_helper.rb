@@ -68,10 +68,14 @@ module TestCentricity
     def get_object_type
       if @type
         @type
-      elsif obj.tag_name
-        obj.tag_name
-      elsif obj.native.attribute('type')
-        obj.native.attribute('type')
+      else
+        obj, type = find_element
+        object_not_found_exception(obj, type)
+        if obj.tag_name
+          obj.tag_name
+        elsif obj.native.attribute('type')
+          obj.native.attribute('type')
+        end
       end
     end
 
@@ -150,7 +154,7 @@ module TestCentricity
     # Send keystrokes to this object.
     #
     # @param keys [String] keys
-     # @example
+    # @example
     #   comment_field.send_keys(:enter)
     #
     def send_keys(*keys)
@@ -389,10 +393,10 @@ module TestCentricity
       obj, type = find_element(visible)
       object_not_found_exception(obj, type)
       case obj.tag_name.downcase
-      when 'input', 'select', 'textarea'
-        obj.value
-      else
-        obj.text
+        when 'input', 'select', 'textarea'
+          obj.value
+        else
+          obj.text
       end
     end
 
@@ -476,7 +480,7 @@ module TestCentricity
     def object_not_found_exception(obj, obj_type)
       @alt_locator.nil? ? locator = @locator : locator = @alt_locator
       obj_type.nil? ? object_type = 'Object' : object_type = obj_type
-      raise "#{object_type} named '#{@name}' (#{locator}) not found" unless obj
+      raise ObjectNotFoundError.new("#{object_type} named '#{@name}' (#{locator}) not found") unless obj
     end
 
     def invalid_object_type_exception(obj, obj_type)

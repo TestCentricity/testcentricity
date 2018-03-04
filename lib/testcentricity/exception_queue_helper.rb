@@ -38,10 +38,21 @@ module TestCentricity
       timestamp = Time.now.strftime('%Y%m%d%H%M%S')
       filename = "Screenshot-#{timestamp}"
       path = File.join Dir.pwd, 'reports/screenshots/', filename
-      Capybara.save_screenshot "#{path}.png"
+      if Environ.driver == :appium
+        AppiumConnect.take_screenshot("#{path}.png")
+      else
+        Capybara.save_screenshot "#{path}.png"
+      end
       puts "Screenshot saved at #{path}.png"
       screen_shot = { :path => path, :filename => filename }
       Environ.save_screen_shot(screen_shot)
+    end
+  end
+
+
+  class ObjectNotFoundError < StandardError
+    def initialize(message)
+      super(message)
     end
   end
 end

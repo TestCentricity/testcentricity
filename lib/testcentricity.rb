@@ -3,20 +3,22 @@ require 'test/unit'
 require 'capybara/poltergeist'
 
 require 'testcentricity/world_extensions'
-require 'testcentricity/browser_helper'
-require 'testcentricity/data_objects_helper'
-require 'testcentricity/drag_drop_helper'
-require 'testcentricity/excel_helper'
 require 'testcentricity/exception_queue_helper'
-require 'testcentricity/page_objects_helper'
-require 'testcentricity/page_sections_helper'
-require 'testcentricity/siebel_open_ui_helper'
 require 'testcentricity/utility_helpers'
-require 'testcentricity/environment'
-require 'testcentricity/webdriver_helper'
 require 'testcentricity/version'
+require 'testcentricity/browser_helper'
+
+require 'testcentricity/web_core/drag_drop_helper'
+require 'testcentricity/web_core/page_objects_helper'
+require 'testcentricity/web_core/page_sections_helper'
+require 'testcentricity/web_core/webdriver_helper'
+
+require 'testcentricity/data_objects/data_objects_helper'
+require 'testcentricity/data_objects/environment'
+require 'testcentricity/data_objects/excel_helper'
 
 require 'testcentricity/web_elements/ui_elements_helper'
+require 'testcentricity/web_elements/siebel_open_ui_helper'
 require 'testcentricity/web_elements/button'
 require 'testcentricity/web_elements/checkbox'
 require 'testcentricity/web_elements/file_field'
@@ -38,17 +40,21 @@ require 'testcentricity/web_elements/list_button'
 require 'testcentricity/web_elements/list_checkbox'
 require 'testcentricity/web_elements/list_radio'
 
-
-
-require 'testcentricity/appium_connect_helper'
-
-require 'testcentricity/screen_objects_helper'
+require 'testcentricity/app_core/appium_server'
+require 'testcentricity/app_core/appium_connect_helper'
+require 'testcentricity/app_core/screen_objects_helper'
+require 'testcentricity/app_core/screen_sections_helper'
 
 require 'testcentricity/app_elements/app_element_helper'
 require 'testcentricity/app_elements/button'
 require 'testcentricity/app_elements/checkbox'
 require 'testcentricity/app_elements/label'
+require 'testcentricity/app_elements/switch'
 require 'testcentricity/app_elements/textfield'
+require 'testcentricity/app_elements/list'
+require 'testcentricity/app_elements/image'
+require 'testcentricity/app_elements/select_list'
+require 'testcentricity/app_elements/alert'
 
 
 module TestCentricity

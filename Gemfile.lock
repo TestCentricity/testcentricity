@@ -1,10 +1,11 @@
 PATH
   remote: .
   specs:
-    testcentricity (3.0)
+    testcentricity (2.3.16.1)
       appium_lib
       browserstack-local
       capybara (>= 2.15, < 3.0)
+      childprocess (~> 0.5)
       chronic (= 0.10.2)
       faker
       i18n

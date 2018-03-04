@@ -36,6 +36,7 @@ module TestCentricity
     attr_accessor :device_type
     attr_accessor :device_os
     attr_accessor :device_orientation
+    attr_accessor :screen_size
     attr_accessor :platform
     attr_accessor :driver
     attr_accessor :tunneling
@@ -44,6 +45,8 @@ module TestCentricity
     attr_accessor :portal_status
     attr_accessor :portal_context
     attr_accessor :external_page
+
+    attr_accessor :default_max_wait_time
 
     attr_accessor :protocol
     attr_accessor :hostname
@@ -102,6 +105,16 @@ module TestCentricity
       end
     end
 
+    def self.default_max_wait_time=(timeout)
+      @default_max_wait_time = timeout
+
+      Capybara.default_max_wait_time = timeout if driver == :webdriver
+    end
+
+    def self.default_max_wait_time
+      @default_max_wait_time
+    end
+
     def self.browser=(browser)
       @browser = browser.downcase.to_sym
     end
@@ -116,6 +129,14 @@ module TestCentricity
 
     def self.browser_size
       @browser_size
+    end
+
+    def self.screen_size=(size)
+      @screen_size = size
+    end
+
+    def self.screen_size
+      @screen_size
     end
 
     def self.session_state=(session_state)

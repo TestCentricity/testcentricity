@@ -48,10 +48,10 @@ module TestCentricity
         locator = "#{@parent_list.get_locator}|#{locator}"
         unless @list_index.nil?
           case @locator_type
-          when :xpath
-            locator = "(#{locator})[#{@list_index}]"
-          when :css
-            locator = "#{locator}:nth-of-type(#{@list_index})"
+            when :xpath
+              locator = "(#{locator})[#{@list_index}]"
+            when :css
+              locator = "#{locator}:nth-of-type(#{@list_index})"
           end
         end
       end
@@ -527,7 +527,7 @@ module TestCentricity
     #
     def disabled?
       section, = find_section
-      raise "Section object '#{get_name}' (#{get_locator}) not found" unless section
+      section_not_found_exception(section)
       section.disabled?
     end
 
@@ -564,7 +564,7 @@ module TestCentricity
     #
     def displayed?
       section, = find_section
-      raise "Section object '#{get_name}' (#{get_locator}) not found" unless section
+      section_not_found_exception(section)
       section.displayed?
     end
 
@@ -628,6 +628,43 @@ module TestCentricity
       raise "Section object '#{get_name}' (#{get_locator}) remained visible after #{timeout} seconds" if visible?
     end
 
+    # Click on a Section object
+    #
+    # @example
+    #   bar_chart_section.click
+    #
+    def click
+      section, = find_section
+      section_not_found_exception(section)
+      begin
+        section.click
+      rescue
+        section.click_at(10, 10) unless Capybara.current_driver == :poltergeist
+      end
+    end
+
+    # Double-click on a Section object
+    #
+    # @example
+    #   bar_chart_section.double_click
+    #
+    def double_click
+      section, = find_section
+      section_not_found_exception(section)
+      page.driver.browser.action.double_click(section.native).perform
+    end
+
+    # Right-click on a Section object
+    #
+    # @example
+    #   bar_chart_section.right_click
+    #
+    def right_click
+      section, = find_section
+      section_not_found_exception(section)
+      page.driver.browser.action.context_click(section.native).perform
+    end
+
     # Click at a specific location within a Section object
     #
     # @param x [Integer] X offset
@@ -637,145 +674,157 @@ module TestCentricity
     #
     def click_at(x, y)
       section, = find_section
-      raise "Section object '#{get_name}' (#{get_locator}) not found" unless section
+      section_not_found_exception(section)
       section.click_at(x, y)
+    end
+
+    # Send keystrokes to a Section object
+    #
+    # @param keys [String] keys
+    # @example
+    #   bar_chart_section.send_keys(:enter)
+    #
+    def send_keys(*keys)
+      section, = find_section
+      section_not_found_exception(section)
+      section.send_keys(*keys)
     end
 
     def verify_ui_states(ui_states)
       ui_states.each do |ui_object, object_states|
         object_states.each do |property, state|
           case property
-          when :class
-            actual = ui_object.get_attribute(:class)
-          when :exists
-            actual = ui_object.exists?
-          when :enabled
-            actual = ui_object.enabled?
-          when :disabled
-            actual = ui_object.disabled?
-          when :visible
-            actual = ui_object.visible?
-          when :hidden
-            actual = ui_object.hidden?
-          when :displayed
-            actual = ui_object.displayed?
-          when :width
-            actual = ui_object.width
-          when :height
-            actual = ui_object.height
-          when :x
-            actual = ui_object.x
-          when :y
-            actual = ui_object.y
-          when :readonly
-            actual = ui_object.read_only?
-          when :checked
-            actual = ui_object.checked?
-          when :selected
-            actual = ui_object.selected?
-          when :value, :caption
-            actual = ui_object.get_value
-          when :maxlength
-            actual = ui_object.get_max_length
-          when :rowcount
-            actual = ui_object.get_row_count
-          when :columncount
-            actual = ui_object.get_column_count
-          when :placeholder
-            actual = ui_object.get_placeholder
-          when :min
-            actual = ui_object.get_min
-          when :max
-            actual = ui_object.get_max
-          when :step
-            actual = ui_object.get_step
-          when :options, :items, :list_items
-            actual = ui_object.get_list_items
-          when :optioncount, :itemcount
-            actual = ui_object.get_item_count
-          when :all_items, :all_list_items
-            actual = ui_object.get_all_list_items
-          when :all_items_count
-            actual = ui_object.get_all_items_count
-          when :column_headers
-            actual = ui_object.get_header_columns
-          when :siebel_options
-            actual = ui_object.get_siebel_options
-          else
-            if property.is_a?(Hash)
-              property.each do |key, value|
-                case key
-                when :cell
-                  actual = ui_object.get_table_cell(value[0].to_i, value[1].to_i)
-                when :row
-                  actual = ui_object.get_table_row(value.to_i)
-                when :column
-                  actual = ui_object.get_table_column(value.to_i)
-                when :item
-                  actual = ui_object.get_list_item(value.to_i)
-                when :attribute
-                  actual = ui_object.get_attribute(value)
-                when :native_attribute
-                  actual = ui_object.get_native_attribute(value)
+            when :class
+              actual = ui_object.get_attribute(:class)
+            when :exists
+              actual = ui_object.exists?
+            when :enabled
+              actual = ui_object.enabled?
+            when :disabled
+              actual = ui_object.disabled?
+            when :visible
+              actual = ui_object.visible?
+            when :hidden
+              actual = ui_object.hidden?
+            when :displayed
+              actual = ui_object.displayed?
+            when :width
+              actual = ui_object.width
+            when :height
+              actual = ui_object.height
+            when :x
+              actual = ui_object.x
+            when :y
+              actual = ui_object.y
+            when :readonly
+              actual = ui_object.read_only?
+            when :checked
+              actual = ui_object.checked?
+            when :selected
+              actual = ui_object.selected?
+            when :value, :caption
+              actual = ui_object.get_value
+            when :maxlength
+              actual = ui_object.get_max_length
+            when :rowcount
+              actual = ui_object.get_row_count
+            when :columncount
+              actual = ui_object.get_column_count
+            when :placeholder
+              actual = ui_object.get_placeholder
+            when :min
+              actual = ui_object.get_min
+            when :max
+              actual = ui_object.get_max
+            when :step
+              actual = ui_object.get_step
+            when :options, :items, :list_items
+              actual = ui_object.get_list_items
+            when :optioncount, :itemcount
+              actual = ui_object.get_item_count
+            when :all_items, :all_list_items
+              actual = ui_object.get_all_list_items
+            when :all_items_count
+              actual = ui_object.get_all_items_count
+            when :column_headers
+              actual = ui_object.get_header_columns
+            when :siebel_options
+              actual = ui_object.get_siebel_options
+            else
+              if property.is_a?(Hash)
+                property.each do |key, value|
+                  case key
+                    when :cell
+                      actual = ui_object.get_table_cell(value[0].to_i, value[1].to_i)
+                    when :row
+                      actual = ui_object.get_table_row(value.to_i)
+                    when :column
+                      actual = ui_object.get_table_column(value.to_i)
+                    when :item
+                      actual = ui_object.get_list_item(value.to_i)
+                    when :attribute
+                      actual = ui_object.get_attribute(value)
+                    when :native_attribute
+                      actual = ui_object.get_native_attribute(value)
+                  end
+                end
+              else
+                props = property.to_s.split('_')
+                case props[0].to_sym
+                  when :cell
+                    cell = property.to_s.delete('cell_')
+                    cell = cell.split('_')
+                    actual = ui_object.get_table_cell(cell[0].to_i, cell[1].to_i)
+                  when :row
+                    row = property.to_s.delete('row_')
+                    actual = ui_object.get_table_row(row.to_i)
+                  when :column
+                    column = property.to_s.delete('column_')
+                    actual = ui_object.get_table_column(column.to_i)
+                  when :item
+                    item = property.to_s.delete('item_')
+                    actual = ui_object.get_list_item(item.to_i)
                 end
               end
-            else
-              props = property.to_s.split('_')
-              case props[0].to_sym
-              when :cell
-                cell = property.to_s.delete('cell_')
-                cell = cell.split('_')
-                actual = ui_object.get_table_cell(cell[0].to_i, cell[1].to_i)
-              when :row
-                row = property.to_s.delete('row_')
-                actual = ui_object.get_table_row(row.to_i)
-              when :column
-                column = property.to_s.delete('column_')
-                actual = ui_object.get_table_column(column.to_i)
-              when :item
-                item = property.to_s.delete('item_')
-                actual = ui_object.get_list_item(item.to_i)
-              end
-            end
           end
 
           if state.is_a?(Hash) && state.length == 1
             error_msg = "Expected UI object '#{ui_object.get_name}' (#{ui_object.get_locator}) #{property} property to"
             state.each do |key, value|
               case key
-              when :lt, :less_than
-                ExceptionQueue.enqueue_exception("#{error_msg} be less than #{value} but found '#{actual}'") unless actual < value
-              when :lt_eq, :less_than_or_equal
-                ExceptionQueue.enqueue_exception("#{error_msg} be less than or equal to #{value} but found '#{actual}'") unless actual <= value
-              when :gt, :greater_than
-                ExceptionQueue.enqueue_exception("#{error_msg} be greater than #{value} but found '#{actual}'") unless actual > value
-              when :gt_eq, :greater_than_or_equal
-                ExceptionQueue.enqueue_exception("#{error_msg} be greater than or equal to  #{value} but found '#{actual}'") unless actual >= value
-              when :starts_with
-                ExceptionQueue.enqueue_exception("#{error_msg} start with '#{value}' but found '#{actual}'") unless actual.start_with?(value)
-              when :ends_with
-                ExceptionQueue.enqueue_exception("#{error_msg} end with '#{value}' but found '#{actual}'") unless actual.end_with?(value)
-              when :contains
-                ExceptionQueue.enqueue_exception("#{error_msg} contain '#{value}' but found '#{actual}'") unless actual.include?(value)
-              when :not_contains, :does_not_contain
-                ExceptionQueue.enqueue_exception("#{error_msg} not contain '#{value}' but found '#{actual}'") if actual.include?(value)
-              when :not_equal
-                ExceptionQueue.enqueue_exception("#{error_msg} not equal '#{value}' but found '#{actual}'") if actual == value
-              when :like, :is_like
-                actual_like = actual.delete("\n")
-                actual_like = actual_like.delete("\r")
-                actual_like = actual_like.delete("\t")
-                actual_like = actual_like.delete(' ')
-                actual_like = actual_like.downcase
-                expected    = value.delete("\n")
-                expected    = expected.delete("\r")
-                expected    = expected.delete("\t")
-                expected    = expected.delete(' ')
-                expected    = expected.downcase
-                ExceptionQueue.enqueue_exception("#{error_msg} be like '#{value}' but found '#{actual}'") unless actual_like.include?(expected)
-              when :translate
-                expected = I18n.t(value)
-                ExceptionQueue.enqueue_assert_equal(expected, actual, "Expected UI object '#{ui_object.get_name}' (#{ui_object.get_locator}) translated #{property} property")
+                when :lt, :less_than
+                  ExceptionQueue.enqueue_exception("#{error_msg} be less than #{value} but found '#{actual}'") unless actual < value
+                when :lt_eq, :less_than_or_equal
+                  ExceptionQueue.enqueue_exception("#{error_msg} be less than or equal to #{value} but found '#{actual}'") unless actual <= value
+                when :gt, :greater_than
+                  ExceptionQueue.enqueue_exception("#{error_msg} be greater than #{value} but found '#{actual}'") unless actual > value
+                when :gt_eq, :greater_than_or_equal
+                  ExceptionQueue.enqueue_exception("#{error_msg} be greater than or equal to  #{value} but found '#{actual}'") unless actual >= value
+                when :starts_with
+                  ExceptionQueue.enqueue_exception("#{error_msg} start with '#{value}' but found '#{actual}'") unless actual.start_with?(value)
+                when :ends_with
+                  ExceptionQueue.enqueue_exception("#{error_msg} end with '#{value}' but found '#{actual}'") unless actual.end_with?(value)
+                when :contains
+                  ExceptionQueue.enqueue_exception("#{error_msg} contain '#{value}' but found '#{actual}'") unless actual.include?(value)
+                when :not_contains, :does_not_contain
+                  ExceptionQueue.enqueue_exception("#{error_msg} not contain '#{value}' but found '#{actual}'") if actual.include?(value)
+                when :not_equal
+                  ExceptionQueue.enqueue_exception("#{error_msg} not equal '#{value}' but found '#{actual}'") if actual == value
+                when :like, :is_like
+                  actual_like = actual.delete("\n")
+                  actual_like = actual_like.delete("\r")
+                  actual_like = actual_like.delete("\t")
+                  actual_like = actual_like.delete(' ')
+                  actual_like = actual_like.downcase
+                  expected    = value.delete("\n")
+                  expected    = expected.delete("\r")
+                  expected    = expected.delete("\t")
+                  expected    = expected.delete(' ')
+                  expected    = expected.downcase
+                  ExceptionQueue.enqueue_exception("#{error_msg} be like '#{value}' but found '#{actual}'") unless actual_like.include?(expected)
+                when :translate
+                  expected = I18n.t(value)
+                  ExceptionQueue.enqueue_assert_equal(expected, actual, "Expected UI object '#{ui_object.get_name}' (#{ui_object.get_locator}) translated #{property} property")
               end
             end
           else
@@ -783,6 +832,9 @@ module TestCentricity
           end
         end
       end
+    rescue ObjectNotFoundError => e
+      ExceptionQueue.enqueue_exception(e.message)
+    ensure
       ExceptionQueue.post_exceptions
     end
 
@@ -822,18 +874,18 @@ module TestCentricity
             data_field.clear
           else
             case data_field.get_object_type
-            when :checkbox
-              data_field.set_checkbox_state(data_param.to_bool)
-            when :selectlist
-              data_field.get_siebel_object_type == 'JComboBox' ?
-                  data_field.set("#{data_param}\t") :
-                  data_field.choose_option(data_param)
-            when :radio
-              data_field.set_selected_state(data_param.to_bool)
-            when :textfield
-              data_field.set("#{data_param}\t")
-            when :section
-              data_field.set(data_param)
+              when :checkbox
+                data_field.set_checkbox_state(data_param.to_bool)
+              when :selectlist
+                data_field.get_siebel_object_type == 'JComboBox' ?
+                    data_field.set("#{data_param}\t") :
+                    data_field.choose_option(data_param)
+              when :radio
+                data_field.set_selected_state(data_param.to_bool)
+              when :textfield
+                data_field.set("#{data_param}\t")
+              when :section
+                data_field.set(data_param)
             end
           end
         end
@@ -842,13 +894,13 @@ module TestCentricity
 
     def get_attribute(attrib)
       section, = find_section
-      raise "Section object '#{get_name}' (#{get_locator}) not found" unless section
+      section_not_found_exception(section)
       section[attrib]
     end
 
     def get_native_attribute(attrib)
       section, = find_section
-      raise "Section object '#{get_name}' (#{get_locator}) not found" unless section
+      section_not_found_exception(section)
       section.native.attribute(attrib)
     end
 
@@ -861,6 +913,10 @@ module TestCentricity
       [obj, @locator_type]
     rescue
       [nil, nil]
+    end
+
+    def section_not_found_exception(section)
+      raise ObjectNotFoundError.new("Section object '#{get_name}' (#{get_locator}) not found") unless section
     end
   end
 end

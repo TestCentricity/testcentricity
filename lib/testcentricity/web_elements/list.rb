@@ -69,5 +69,22 @@ module TestCentricity
         "#{@locator} > #{@list_item}:nth-of-type(#{row})"
       end
     end
+
+    def wait_until_item_count_is(value, seconds = nil)
+      timeout = seconds.nil? ? Capybara.default_max_wait_time : seconds
+      wait = Selenium::WebDriver::Wait.new(timeout: timeout)
+      wait.until { get_item_count == value }
+    rescue
+      raise "Value of List #{object_ref_message} failed to equal '#{value}' after #{timeout} seconds" unless get_item_count == value
+    end
+
+    def wait_until_item_count_changes(seconds = nil)
+      value = get_item_count
+      timeout = seconds.nil? ? Capybara.default_max_wait_time : seconds
+      wait = Selenium::WebDriver::Wait.new(timeout: timeout)
+      wait.until { get_item_count != value }
+    rescue
+      raise "Value of List #{object_ref_message} failed to change from '#{value}' after #{timeout} seconds" if get_item_count == value
+    end
   end
 end

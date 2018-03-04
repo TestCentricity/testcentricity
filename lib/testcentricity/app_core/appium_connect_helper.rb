@@ -5,16 +5,30 @@ module TestCentricity
   module AppiumConnect
 
     attr_accessor :running
+    attr_accessor :config_file
 
     def self.initialize_appium(project_path = nil)
       Environ.platform    = :mobile
       Environ.driver      = :appium
       Environ.device_type = ENV['DEVICE_TYPE'] if ENV['DEVICE_TYPE']
 
+      @config_file = project_path
+
       if project_path.nil?
         Environ.device_name = ENV['APP_DEVICE']
         Environ.device_os   = ENV['APP_PLATFORM_NAME']
         Environ.device_orientation = ENV['ORIENTATION'] if ENV['ORIENTATION']
+        if ENV['UDID']
+          Environ.device = :device
+        else
+          Environ.device = :simulator
+        end
+      end
+      @running = false
+    end
+
+    def self.start_driver
+      if @config_file.nil?
         desired_capabilities = {
             caps: {
                 platformName:    ENV['APP_PLATFORM_NAME'],
@@ -32,15 +46,12 @@ module TestCentricity
         capabilities[:noReset] = ENV['APP_NO_RESET'] if ENV['APP_NO_RESET']
         capabilities[:fullReset] = ENV['APP_FULL_RESET'] if ENV['APP_FULL_RESET']
         if ENV['UDID']
-          Environ.device = :device
           capabilities[:udid] = ENV['UDID']
           capabilities[:bundleId] = ENV['BUNDLE_ID'] if ENV['BUNDLE_ID']
           capabilities[:xcodeOrgId] = ENV['TEAM_ID'] if ENV['TEAM_ID']
           capabilities[:xcodeSigningId] = ENV['TEAM_NAME'] if ENV['TEAM_NAME']
           capabilities[:appActivity] = ENV['APP_ACTIVITY'] if ENV['APP_ACTIVITY']
           capabilities[:appPackage] = ENV['APP_PACKAGE'] if ENV['APP_PACKAGE']
-        else
-          Environ.device = :simulator
         end
 
         if ENV['APP']
@@ -59,24 +70,18 @@ module TestCentricity
 
       else
         base_path = 'config'
-        unless File.directory?(File.join(project_path, base_path))
+        unless File.directory?(File.join(@config_file, base_path))
           raise 'Could not find appium.txt files in /config folder'
         end
-        appium_caps = File.join(project_path, base_path, 'appium.txt')
+        appium_caps = File.join(@config_file, base_path, 'appium.txt')
         desired_capabilities = Appium.load_appium_txt file: appium_caps
       end
-
-      puts "desired_capabilities = #{desired_capabilities}"
-
       Appium::Driver.new(desired_capabilities).start_driver
       @running = true
-    end
+      Appium.promote_appium_methods TestCentricity::ScreenObject
+      Appium.promote_appium_methods TestCentricity::AppUIElement
 
-    def self.start_driver
-      unless @running
-        $driver.start_driver
-        @running = true
-      end
+      Environ.screen_size = $driver.window_size
     end
 
     def self.quit_driver
@@ -93,6 +98,79 @@ module TestCentricity
     def self.take_screenshot(png_save_path)
       FileUtils.mkdir_p(File.dirname(png_save_path))
       $driver.driver.save_screenshot(png_save_path)
+    end
+
+    def self.install_app(app_path)
+      $driver.install_app(app_path)
+    end
+
+    def self.app_installed?(bundle_id)
+      $driver.app_installed?(bundle_id)
+    end
+
+    def self.launch_app
+      $driver.launch_app
+    end
+
+    def self.close_app
+      $driver.close_app
+    end
+
+    def self.reset_app
+      $driver.reset
+    end
+
+    def self.remove_app(bundle_id)
+      $driver.remove_app(bundle_id)
+    end
+
+    def self.implicit_wait(timeout)
+      $driver.manage.timeouts.implicit_wait = timeout
+    end
+
+    def self.hide_keyboard
+      $driver.hide_keyboard
+    end
+
+    def self.keyboard_shown?
+      $driver.is_keyboard_shown
+    end
+
+    def self.set_orientation(orientation)
+      $driver.rotation = orientation.downcase.to_sym
+    end
+
+    def self.set_geolocation(latitude, longitude, altitude)
+      $driver.set_location(latitude, longitude, altitude)
+    end
+
+    def self.current_context
+      $driver.current_context
+    end
+
+    def self.set_context(context)
+      $driver.set_context(context)
+    end
+
+    def self.available_contexts
+      $driver.available_contexts
+    end
+
+    def self.default_context
+      $driver.switch_to_default_context
+    end
+
+    def self.is_webview?
+      $driver.current_context.start_with?('WEBVIEW')
+    end
+
+    def self.is_native_app?
+      $driver.current_context.start_with?('NATIVE_APP')
+    end
+
+    def self.webview_context
+      contexts = available_contexts
+      set_context(contexts.last)
     end
   end
 end

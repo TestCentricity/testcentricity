@@ -1,26 +1,26 @@
 module TestCentricity
-  class AppCheckBox < AppUIElement
+  class AppSwitch < AppUIElement
     def initialize(name, parent, locator, context)
       super
-      @type = :checkbox
+      @type = :switch
     end
 
-    def checked?
+    def on?
       obj = element
       object_not_found_exception(obj)
-      obj.attribute('checked') == 'true'
+      obj.get_value == 1
     end
 
-    def check
+    def on
       obj = element
       object_not_found_exception(obj)
-      obj.click unless obj.attribute('checked') == 'true'
+      obj.click unless obj.get_value == 1
     end
 
-    def uncheck
+    def off
       obj = element
       object_not_found_exception(obj)
-      obj.click if obj.attribute('checked') == 'true'
+      obj.click if obj.get_value == 1
     end
   end
 end
