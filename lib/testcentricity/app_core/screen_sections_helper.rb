@@ -10,31 +10,35 @@ module TestCentricity
     attr_accessor :parent_list
     attr_accessor :list_index
 
-    def initialize(name, parent, context)
+    def initialize(name, parent, locator, context)
       @name        = name
       @parent      = parent
+      @locator     = locator
       @context     = context
       @parent_list = nil
       @list_index  = nil
-      @locator     = nil
     end
 
     def get_locator
-      @locator = section_locator
+      if @locator.zero? && defined?(section_locator)
+        my_locator = section_locator
+      else
+        my_locator = @locator
+      end
       locators = []
       if @context == :section && !@parent.nil?
         locators.push(@parent.get_locator)
       end
 
       if @parent_list.nil?
-        locators.push(@locator)
+        locators.push(my_locator)
       else
         locators.push(@parent_list.get_locator)
         if @list_index.nil?
-          locators.push(@locator)
+          locators.push(my_locator)
         else
-          list_key = @locator.keys[0]
-          list_value = "#{@locator.values[0]}[#{@list_index}]"
+          list_key = my_locator.keys[0]
+          list_value = "#{my_locator.values[0]}[#{@list_index}]"
           locators.push( { list_key => list_value } )
         end
       end
@@ -76,8 +80,17 @@ module TestCentricity
       define_method(trait_name.to_s, &block)
     end
 
+    # def self.element(element_name, locator)
+    #   class_eval(%(def #{element_name};@#{element_name} ||= TestCentricity::AppUIElement.new("#{element_name}", self, #{locator}, :section);end))
+    # end
+
     def self.element(element_name, locator)
-      class_eval(%(def #{element_name};@#{element_name} ||= TestCentricity::AppUIElement.new("#{element_name}", self, #{locator}, :section);end))
+      define_method(element_name) do
+        ivar_name = "@#{element_name}"
+        ivar = instance_variable_get(ivar_name)
+        return ivar if ivar
+        instance_variable_set(ivar_name, TestCentricity::AppUIElement.new(element_name, self, locator, :section))
+      end
     end
 
     def self.elements(element_hash)
@@ -86,8 +99,17 @@ module TestCentricity
       end
     end
 
+    # def self.button(element_name, locator)
+    #   class_eval(%(def #{element_name};@#{element_name} ||= TestCentricity::AppButton.new("#{element_name}", self, #{locator}, :section);end))
+    # end
+
     def self.button(element_name, locator)
-      class_eval(%(def #{element_name};@#{element_name} ||= TestCentricity::AppButton.new("#{element_name}", self, #{locator}, :section);end))
+      define_method(element_name) do
+        ivar_name = "@#{element_name}"
+        ivar = instance_variable_get(ivar_name)
+        return ivar if ivar
+        instance_variable_set(ivar_name, TestCentricity::AppButton.new(element_name, self, locator, :section))
+      end
     end
 
     def self.buttons(element_hash)
@@ -96,8 +118,17 @@ module TestCentricity
       end
     end
 
+    # def self.textfield(element_name, locator)
+    #   class_eval(%(def #{element_name};@#{element_name} ||= TestCentricity::AppTextField.new("#{element_name}", self, #{locator}, :section);end))
+    # end
+
     def self.textfield(element_name, locator)
-      class_eval(%(def #{element_name};@#{element_name} ||= TestCentricity::AppTextField.new("#{element_name}", self, #{locator}, :section);end))
+      define_method(element_name) do
+        ivar_name = "@#{element_name}"
+        ivar = instance_variable_get(ivar_name)
+        return ivar if ivar
+        instance_variable_set(ivar_name, TestCentricity::AppTextField.new(element_name, self, locator, :section))
+      end
     end
 
     def self.textfields(element_hash)
@@ -106,8 +137,17 @@ module TestCentricity
       end
     end
 
+    # def self.switch(element_name, locator)
+    #   class_eval(%(def #{element_name};@#{element_name} ||= TestCentricity::AppSwitch.new("#{element_name}", self, #{locator}, :section);end))
+    # end
+
     def self.switch(element_name, locator)
-      class_eval(%(def #{element_name};@#{element_name} ||= TestCentricity::AppSwitch.new("#{element_name}", self, #{locator}, :section);end))
+      define_method(element_name) do
+        ivar_name = "@#{element_name}"
+        ivar = instance_variable_get(ivar_name)
+        return ivar if ivar
+        instance_variable_set(ivar_name, TestCentricity::AppSwitch.new(element_name, self, locator, :section))
+      end
     end
 
     def self.switches(element_hash)
@@ -116,8 +156,17 @@ module TestCentricity
       end
     end
 
+    # def self.checkbox(element_name, locator)
+    #   class_eval(%(def #{element_name};@#{element_name} ||= TestCentricity::AppCheckBox.new("#{element_name}", self, #{locator}, :section);end))
+    # end
+
     def self.checkbox(element_name, locator)
-      class_eval(%(def #{element_name};@#{element_name} ||= TestCentricity::AppCheckBox.new("#{element_name}", self, #{locator}, :section);end))
+      define_method(element_name) do
+        ivar_name = "@#{element_name}"
+        ivar = instance_variable_get(ivar_name)
+        return ivar if ivar
+        instance_variable_set(ivar_name, TestCentricity::AppCheckBox.new(element_name, self, locator, :section))
+      end
     end
 
     def self.checkboxes(element_hash)
@@ -126,8 +175,17 @@ module TestCentricity
       end
     end
 
+    # def self.label(element_name, locator)
+    #   class_eval(%(def #{element_name};@#{element_name} ||= TestCentricity::AppLabel.new("#{element_name}", self, #{locator}, :section);end))
+    # end
+
     def self.label(element_name, locator)
-      class_eval(%(def #{element_name};@#{element_name} ||= TestCentricity::AppLabel.new("#{element_name}", self, #{locator}, :section);end))
+      define_method(element_name) do
+        ivar_name = "@#{element_name}"
+        ivar = instance_variable_get(ivar_name)
+        return ivar if ivar
+        instance_variable_set(ivar_name, TestCentricity::AppLabel.new(element_name, self, locator, :section))
+      end
     end
 
     def self.labels(element_hash)
@@ -136,8 +194,17 @@ module TestCentricity
       end
     end
 
+    # def self.list(element_name, locator)
+    #   class_eval(%(def #{element_name};@#{element_name} ||= TestCentricity::AppList.new("#{element_name}", self, #{locator}, :section);end))
+    # end
+
     def self.list(element_name, locator)
-      class_eval(%(def #{element_name};@#{element_name} ||= TestCentricity::AppList.new("#{element_name}", self, #{locator}, :section);end))
+      define_method(element_name) do
+        ivar_name = "@#{element_name}"
+        ivar = instance_variable_get(ivar_name)
+        return ivar if ivar
+        instance_variable_set(ivar_name, TestCentricity::AppList.new(element_name, self, locator, :section))
+      end
     end
 
     def self.lists(element_hash)
@@ -146,8 +213,17 @@ module TestCentricity
       end
     end
 
+    # def self.selectlist(element_name, locator)
+    #   class_eval(%(def #{element_name};@#{element_name} ||= TestCentricity::AppSelectList.new("#{element_name}", self, #{locator}, :section);end))
+    # end
+
     def self.selectlist(element_name, locator)
-      class_eval(%(def #{element_name};@#{element_name} ||= TestCentricity::AppSelectList.new("#{element_name}", self, #{locator}, :section);end))
+      define_method(element_name) do
+        ivar_name = "@#{element_name}"
+        ivar = instance_variable_get(ivar_name)
+        return ivar if ivar
+        instance_variable_set(ivar_name, TestCentricity::AppSelectList.new(element_name, self, locator, :section))
+      end
     end
 
     def self.selectlists(element_hash)
@@ -156,8 +232,17 @@ module TestCentricity
       end
     end
 
+    # def self.image(element_name, locator)
+    #   class_eval(%(def #{element_name};@#{element_name} ||= TestCentricity::AppImage.new("#{element_name}", self, #{locator}, :section);end))
+    # end
+
     def self.image(element_name, locator)
-      class_eval(%(def #{element_name};@#{element_name} ||= TestCentricity::AppImage.new("#{element_name}", self, #{locator}, :section);end))
+      define_method(element_name) do
+        ivar_name = "@#{element_name}"
+        ivar = instance_variable_get(ivar_name)
+        return ivar if ivar
+        instance_variable_set(ivar_name, TestCentricity::AppImage.new(element_name, self, locator, :section))
+      end
     end
 
     def self.images(element_hash)
@@ -166,12 +251,21 @@ module TestCentricity
       end
     end
 
+    # def self.alert(element_name, locator)
+    #   class_eval(%(def #{element_name};@#{element_name} ||= TestCentricity::AppAlert.new("#{element_name}", self, #{locator}, :page);end))
+    # end
+
     def self.alert(element_name, locator)
-      class_eval(%(def #{element_name};@#{element_name} ||= TestCentricity::AppAlert.new("#{element_name}", self, #{locator}, :page);end))
+      define_method(element_name) do
+        ivar_name = "@#{element_name}"
+        ivar = instance_variable_get(ivar_name)
+        return ivar if ivar
+        instance_variable_set(ivar_name, TestCentricity::AppAlert.new(element_name, self, locator, :page))
+      end
     end
 
-    def self.section(section_name, class_name)
-      class_eval(%(def #{section_name};@#{section_name} ||= #{class_name}.new("#{section_name}", self, :section);end))
+    def self.section(section_name, class_name, locator = 0)
+      class_eval(%(def #{section_name};@#{section_name} ||= #{class_name}.new("#{section_name}", self, #{locator}, :section);end))
     end
 
     def self.sections(section_hash)
@@ -267,7 +361,6 @@ module TestCentricity
     end
 
 
-
     def width
       section = find_section
       section_not_found_exception(section)
@@ -285,13 +378,12 @@ module TestCentricity
       section_not_found_exception(section)
       section.location.x
     end
+
     def y_loc
       section = find_section
       section_not_found_exception(section)
       section.location.y
     end
-
-
 
 
     def verify_ui_states(ui_states)
@@ -301,6 +393,8 @@ module TestCentricity
           puts "#{ui_object.get_name} - #{property} = #{state}" if ENV['DEBUG']
 
           case property
+          when :class
+            actual = ui_object.get_attribute(:class)
           when :exists
             actual = ui_object.exists?
           when :enabled
@@ -340,49 +434,8 @@ module TestCentricity
           when :y
             actual = ui_object.y_loc
           end
-
-          if state.is_a?(Hash) && state.length == 1
-            error_msg = "Expected UI object '#{ui_object.get_name}' (#{ui_object.get_locator}) #{property} property to"
-            state.each do |key, value|
-              case key
-              when :lt, :less_than
-                ExceptionQueue.enqueue_exception("#{error_msg} be less than #{value} but found '#{actual}'") unless actual < value
-              when :lt_eq, :less_than_or_equal
-                ExceptionQueue.enqueue_exception("#{error_msg} be less than or equal to #{value} but found '#{actual}'") unless actual <= value
-              when :gt, :greater_than
-                ExceptionQueue.enqueue_exception("#{error_msg} be greater than #{value} but found '#{actual}'") unless actual > value
-              when :gt_eq, :greater_than_or_equal
-                ExceptionQueue.enqueue_exception("#{error_msg} be greater than or equal to  #{value} but found '#{actual}'") unless actual >= value
-              when :starts_with
-                ExceptionQueue.enqueue_exception("#{error_msg} start with '#{value}' but found '#{actual}'") unless actual.start_with?(value)
-              when :ends_with
-                ExceptionQueue.enqueue_exception("#{error_msg} end with '#{value}' but found '#{actual}'") unless actual.end_with?(value)
-              when :contains
-                ExceptionQueue.enqueue_exception("#{error_msg} contain '#{value}' but found '#{actual}'") unless actual.include?(value)
-              when :not_contains, :does_not_contain
-                ExceptionQueue.enqueue_exception("#{error_msg} not contain '#{value}' but found '#{actual}'") if actual.include?(value)
-              when :not_equal
-                ExceptionQueue.enqueue_exception("#{error_msg} not equal '#{value}' but found '#{actual}'") if actual == value
-              when :like, :is_like
-                actual_like = actual.delete("\n")
-                actual_like = actual_like.delete("\r")
-                actual_like = actual_like.delete("\t")
-                actual_like = actual_like.delete(' ')
-                actual_like = actual_like.downcase
-                expected    = value.delete("\n")
-                expected    = expected.delete("\r")
-                expected    = expected.delete("\t")
-                expected    = expected.delete(' ')
-                expected    = expected.downcase
-                ExceptionQueue.enqueue_exception("#{error_msg} be like '#{value}' but found '#{actual}'") unless actual_like.include?(expected)
-              when :translate
-                expected = I18n.t(value)
-                ExceptionQueue.enqueue_assert_equal(expected, actual, "Expected UI object '#{ui_object.get_name}' (#{ui_object.get_locator}) translated #{property} property")
-              end
-            end
-          else
-            ExceptionQueue.enqueue_assert_equal(state, actual, "Expected UI object '#{ui_object.get_name}' (#{ui_object.get_locator}) #{property} property")
-          end
+          error_msg = "Expected UI object '#{ui_object.get_name}' (#{ui_object.get_locator}) #{property} property to"
+          ExceptionQueue.enqueue_comparison(state, actual, error_msg)
         end
       end
     rescue ObjectNotFoundError => e
@@ -404,6 +457,7 @@ module TestCentricity
             when :checkbox
               data_field.set_checkbox_state(data_param.to_bool)
             when :textfield
+              data_field.clear
               data_field.set("#{data_param}\t")
             end
           end

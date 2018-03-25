@@ -35,19 +35,15 @@ module TestCentricity
     def tap
       obj = element
       object_not_found_exception(obj)
-      x = obj.location.x
-      y = obj.location.y
-      tap_action = Appium::TouchAction.new.tap(element: obj, x: x, y: y)
-      tap_action.perform
+      actions = Appium::TouchAction.new
+      actions.tap(element: obj).perform
     end
 
     def double_tap
       obj = element
       object_not_found_exception(obj)
-      x = obj.location.x
-      y = obj.location.y
-      tap_action = Appium::TouchAction.new.double_tap(element: obj, x: x, y: y)
-      tap_action.perform
+      actions = Appium::TouchAction.new
+      actions.double_tap(element: obj).perform
     end
 
     def set(value)
@@ -55,7 +51,11 @@ module TestCentricity
       object_not_found_exception(obj)
       if value.is_a?(Array)
         obj.send_keys(value[0])
-        obj.send_keys(value[1])
+        if value[1].is_a?(Integer)
+          press_keycode(value[1])
+        else
+          obj.send_keys(value[1])
+        end
       elsif value.is_a?(String)
         obj.send_keys(value)
       end
@@ -98,12 +98,15 @@ module TestCentricity
         else
           obj.text
         end
-      else
-        if obj.tag_name == 'XCUIElementTypeNavigationBar'
+      elsif Environ.device_os == :ios
+        case obj.tag_name
+        when 'XCUIElementTypeNavigationBar'
           obj.attribute('name')
         else
           obj.attribute('label')
         end
+      else
+        obj.text
       end
     end
 
@@ -218,14 +221,17 @@ module TestCentricity
     # Wait until the object's value equals the specified value, or until the specified wait time has expired. If the wait
     # time is nil, then the wait time will be Environ.default_max_wait_time.
     #
+    # @param value [String or Hash] value expected or comparison hash
     # @param seconds [Integer or Float] wait time in seconds
     # @example
-    #   card_authorized_label.wait_until_value_is(5, 'Card authorized')
+    #   card_authorized_label.wait_until_value_is('Card authorized', 5)
+    #     or
+    #   total_weight_field.wait_until_value_is({ :greater_than => '250' }, 5)
     #
     def wait_until_value_is(value, seconds = nil)
       timeout = seconds.nil? ? Environ.default_max_wait_time : seconds
       wait = Selenium::WebDriver::Wait.new(timeout: timeout)
-      wait.until { get_value == value }
+      wait.until { compare(value, get_value) }
     rescue
       raise "Value of UI #{object_ref_message} failed to equal '#{value}' after #{timeout} seconds" unless get_value == value
     end
@@ -291,21 +297,44 @@ module TestCentricity
     def scroll(direction)
       obj = element
       object_not_found_exception(obj)
-      execute_script('mobile: scroll', direction: direction.to_s, element: obj)
+      if Environ.device_os == :ios
+        execute_script('mobile: scroll', direction: direction.to_s, element: obj)
+      else
+        case direction
+        when :down
+          x = obj.size.width.to_i / 2
+          bottom = obj.size.height
+          bottom = window_size[:height].to_i if bottom > window_size[:height]
+          start_pt = [x, bottom]
+          delta_pt = [0, 0 - (bottom - 20)]
+
+        when :up
+          x = obj.size.width.to_i / 2
+          top = obj.location.y - (obj.size.height / 2)
+          top = 0 if top < 0
+          start_pt = [x, top]
+          delta_pt = [0, obj.size.height / 2]
+        end
+        puts "Swipe start_pt = #{start_pt} / delta_pt = #{delta_pt}" if ENV['DEBUG']
+        Appium::TouchAction.new.swipe(start_x: start_pt[0], start_y: start_pt[1], delta_x: delta_pt[0], delta_y: delta_pt[1]).perform
+      end
     end
 
     def swipe(direction)
-      execute_script('mobile: swipe', direction: direction.to_s)
+      obj = element
+      object_not_found_exception(obj)
+      if Environ.device_os == :ios
+        execute_script('mobile: swipe', direction: direction.to_s, element: obj)
+      else
+        actions = Appium::TouchAction.new
+        actions.scroll(element: obj).perform
+      end
     end
-
 
     private
 
     def element
-      parent_section = @context == :section
-      parent_section ? tries ||= 2 : tries ||= 1
-
-      if parent_section && tries > 1
+      if @context == :section
         parent_obj = nil
         locators = @parent.get_locator
         locators.each do |parent_locator|
@@ -325,7 +354,7 @@ module TestCentricity
         obj
       end
     rescue
-      retry if (tries -= 1) > 0
+      puts "Did not find object '#{@name}' - #{@locator}" if ENV['DEBUG']
       nil
     end
 
@@ -336,6 +365,29 @@ module TestCentricity
 
     def object_ref_message
       "object '#{@name}' (#{get_locator})"
+    end
+
+    def compare(expected, actual)
+      if expected.is_a?(Hash)
+        result = false
+        expected.each do |key, value|
+          case key
+          when :lt, :less_than
+            result = actual < value
+          when :lt_eq, :less_than_or_equal
+            result = actual <= value
+          when :gt, :greater_than
+            result = actual > value
+          when :gt_eq, :greater_than_or_equal
+            result = actual >= value
+          when :not_equal
+            result = actual != value
+          end
+        end
+      else
+        result = expected == actual
+      end
+      result
     end
   end
 end

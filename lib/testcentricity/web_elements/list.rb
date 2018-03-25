@@ -70,10 +70,20 @@ module TestCentricity
       end
     end
 
+    # Wait until the list's item_count equals the specified value, or until the specified wait time has expired. If the wait
+    # time is nil, then the wait time will be Capybara.default_max_wait_time.
+    #
+    # @param value [Integer or Hash] value expected or comparison hash
+    # @param seconds [Integer or Float] wait time in seconds
+    # @example
+    #   search_results_list.wait_until_item_count_is(10, 15)
+    #     or
+    #   search_results_list.wait_until_item_count_is({ :greater_than_or_equal => 1 }, 5)
+    #
     def wait_until_item_count_is(value, seconds = nil)
       timeout = seconds.nil? ? Capybara.default_max_wait_time : seconds
       wait = Selenium::WebDriver::Wait.new(timeout: timeout)
-      wait.until { get_item_count == value }
+      wait.until { compare(value, get_item_count) }
     rescue
       raise "Value of List #{object_ref_message} failed to equal '#{value}' after #{timeout} seconds" unless get_item_count == value
     end
