@@ -17,6 +17,7 @@ module TestCentricity
 
       if project_path.nil?
         browser = ENV['WEB_BROWSER']
+        Environ.browser = browser
         case browser.downcase.to_sym
         when :appium
           Environ.device_name = ENV['APP_DEVICE']
@@ -35,72 +36,9 @@ module TestCentricity
         browser = ENV['WEB_BROWSER']
         case browser.downcase.to_sym
         when :appium
-          desired_capabilities = {
-              caps: {
-                  platformName:    ENV['APP_PLATFORM_NAME'],
-                  platformVersion: ENV['APP_VERSION'],
-                  deviceName:      ENV['APP_DEVICE'],
-                  automationName:  ENV['AUTOMATION_ENGINE']
-              }
-          }
-          capabilities = desired_capabilities[:caps]
-          capabilities[:avd]                    = ENV['APP_DEVICE'] if ENV['APP_PLATFORM_NAME'].downcase.to_sym == :android
-          capabilities[:orientation]            = ENV['ORIENTATION'].upcase if ENV['ORIENTATION']
-          capabilities[:language]               = ENV['LANGUAGE'] if ENV['LANGUAGE']
-          capabilities[:locale]                 = ENV['LOCALE'].gsub('-', '_') if ENV['LOCALE']
-          capabilities[:newCommandTimeout]      = ENV['NEW_COMMAND_TIMEOUT'] if ENV['NEW_COMMAND_TIMEOUT']
-          capabilities[:noReset]                = ENV['APP_NO_RESET'] if ENV['APP_NO_RESET']
-          capabilities[:fullReset]              = ENV['APP_FULL_RESET'] if ENV['APP_FULL_RESET']
-          capabilities[:webkitDebugProxyPort]   = ENV['WEBKIT_DEBUG_PROXY_PORT'] if ENV['WEBKIT_DEBUG_PROXY_PORT']
-          capabilities[:webDriverAgentUrl]      = ENV['WEBDRIVER_AGENT_URL'] if ENV['WEBDRIVER_AGENT_URL']
-          capabilities[:wdaLocalPort]           = ENV['WDA_LOCAL_PORT'] if ENV['WDA_LOCAL_PORT']
-          capabilities[:usePrebuiltWDA]         = ENV['USE_PREBUILT_WDA'] if ENV['USE_PREBUILT_WDA']
-          capabilities[:useNewWDA]              = ENV['USE_NEW_WDA'] if ENV['USE_NEW_WDA']
-          capabilities[:startIWDP]              = ENV['START_IWDP'] if ENV['START_IWDP']
-          capabilities[:autoWebview]            = ENV['AUTO_WEBVIEW'] if ENV['AUTO_WEBVIEW']
-          capabilities[:chromedriverExecutable] = ENV['CHROMEDRIVER_EXECUTABLE'] if ENV['CHROMEDRIVER_EXECUTABLE']
-          capabilities[:autoWebviewTimeout]     = ENV['AUTO_WEBVIEW_TIMEOUT'] if ENV['AUTO_WEBVIEW_TIMEOUT']
-
-          if ENV['UDID']
-            capabilities[:udid]           = ENV['UDID']
-            capabilities[:bundleId]       = ENV['BUNDLE_ID'] if ENV['BUNDLE_ID']
-            capabilities[:xcodeOrgId]     = ENV['TEAM_ID'] if ENV['TEAM_ID']
-            capabilities[:xcodeSigningId] = ENV['TEAM_NAME'] if ENV['TEAM_NAME']
-            capabilities[:appActivity]    = ENV['APP_ACTIVITY'] if ENV['APP_ACTIVITY']
-            capabilities[:appPackage]     = ENV['APP_PACKAGE'] if ENV['APP_PACKAGE']
-          end
-
-          if ENV['APP']
-            capabilities[:app] = ENV['APP']
-          else
-            if Environ.is_android?
-              capabilities[:app] = Environ.current.android_apk_path
-            elsif Environ.is_ios?
-              Environ.is_device? ?
-                  capabilities[:app] = Environ.current.ios_ipa_path :
-                  capabilities[:app] = Environ.current.ios_app_path
-            end
-          end
+          desired_capabilities = appium_local_capabilities
         when :browserstack
-          endpoint = "http://#{ENV['BS_USERNAME']}:#{ENV['BS_AUTHKEY']}@hub-cloud.browserstack.com/wd/hub"
-
-          capabilities = {}
-          capabilities['device']     = ENV['BS_DEVICE']
-          capabilities['os_version'] = ENV['BS_OS_VERSION']
-          capabilities['app']        = "bs://#{ENV['APP_ID']}"
-          capabilities['realMobile'] = true
-          capabilities['project']    = ENV['AUTOMATE_PROJECT'] if ENV['AUTOMATE_PROJECT']
-          capabilities['build']      = ENV['AUTOMATE_BUILD'] if ENV['AUTOMATE_BUILD']
-          capabilities['deviceOrientation']  = ENV['ORIENTATION'] if ENV['ORIENTATION']
-          capabilities['browserstack.debug'] = true
-          capabilities['browserstack.video'] = ENV['RECORD_VIDEO'] if ENV['RECORD_VIDEO']
-          capabilities['browserstack.debug'] = 'true'
-
-          appium_lib_options = { server_url: endpoint }
-          desired_capabilities = {
-              appium_lib:  appium_lib_options,
-              caps:        capabilities
-          }
+          desired_capabilities = browserstack_capabilities
         end
       else
         base_path = 'config'
@@ -212,6 +150,82 @@ module TestCentricity
       puts "Contexts = #{contexts}" if ENV['DEBUG']
       set_context(contexts.last)
       puts "Current context = #{$driver.current_context}" if ENV['DEBUG']
+    end
+
+    private
+
+    def self.appium_local_capabilities
+      desired_capabilities = {
+          caps: {
+              platformName:    ENV['APP_PLATFORM_NAME'],
+              platformVersion: ENV['APP_VERSION'],
+              deviceName:      ENV['APP_DEVICE'],
+              automationName:  ENV['AUTOMATION_ENGINE']
+          }
+      }
+      capabilities = desired_capabilities[:caps]
+      capabilities[:avd]                    = ENV['APP_DEVICE'] if ENV['APP_PLATFORM_NAME'].downcase.to_sym == :android
+      capabilities[:orientation]            = ENV['ORIENTATION'].upcase if ENV['ORIENTATION']
+      capabilities[:language]               = ENV['LANGUAGE'] if ENV['LANGUAGE']
+      capabilities[:locale]                 = ENV['LOCALE'].gsub('-', '_') if ENV['LOCALE']
+      capabilities[:newCommandTimeout]      = ENV['NEW_COMMAND_TIMEOUT'] if ENV['NEW_COMMAND_TIMEOUT']
+      capabilities[:noReset]                = ENV['APP_NO_RESET'] if ENV['APP_NO_RESET']
+      capabilities[:fullReset]              = ENV['APP_FULL_RESET'] if ENV['APP_FULL_RESET']
+      capabilities[:webkitDebugProxyPort]   = ENV['WEBKIT_DEBUG_PROXY_PORT'] if ENV['WEBKIT_DEBUG_PROXY_PORT']
+      capabilities[:webDriverAgentUrl]      = ENV['WEBDRIVER_AGENT_URL'] if ENV['WEBDRIVER_AGENT_URL']
+      capabilities[:wdaLocalPort]           = ENV['WDA_LOCAL_PORT'] if ENV['WDA_LOCAL_PORT']
+      capabilities[:usePrebuiltWDA]         = ENV['USE_PREBUILT_WDA'] if ENV['USE_PREBUILT_WDA']
+      capabilities[:useNewWDA]              = ENV['USE_NEW_WDA'] if ENV['USE_NEW_WDA']
+      capabilities[:startIWDP]              = ENV['START_IWDP'] if ENV['START_IWDP']
+      capabilities[:autoWebview]            = ENV['AUTO_WEBVIEW'] if ENV['AUTO_WEBVIEW']
+      capabilities[:chromedriverExecutable] = ENV['CHROMEDRIVER_EXECUTABLE'] if ENV['CHROMEDRIVER_EXECUTABLE']
+      capabilities[:autoWebviewTimeout]     = ENV['AUTO_WEBVIEW_TIMEOUT'] if ENV['AUTO_WEBVIEW_TIMEOUT']
+
+      if ENV['UDID']
+        capabilities[:udid]           = ENV['UDID']
+        capabilities[:bundleId]       = ENV['BUNDLE_ID'] if ENV['BUNDLE_ID']
+        capabilities[:xcodeOrgId]     = ENV['TEAM_ID'] if ENV['TEAM_ID']
+        capabilities[:xcodeSigningId] = ENV['TEAM_NAME'] if ENV['TEAM_NAME']
+        capabilities[:appActivity]    = ENV['APP_ACTIVITY'] if ENV['APP_ACTIVITY']
+        capabilities[:appPackage]     = ENV['APP_PACKAGE'] if ENV['APP_PACKAGE']
+      end
+
+      if ENV['APP']
+        capabilities[:app] = ENV['APP']
+      else
+        if Environ.is_android?
+          capabilities[:app] = Environ.current.android_apk_path
+        elsif Environ.is_ios?
+          Environ.is_device? ?
+              capabilities[:app] = Environ.current.ios_ipa_path :
+              capabilities[:app] = Environ.current.ios_app_path
+        end
+      end
+      desired_capabilities
+    end
+
+    def self.browserstack_capabilities
+      endpoint = "http://#{ENV['BS_USERNAME']}:#{ENV['BS_AUTHKEY']}@hub-cloud.browserstack.com/wd/hub"
+
+      capabilities = {}
+      capabilities['device']     = ENV['BS_DEVICE']
+      capabilities['os_version'] = ENV['BS_OS_VERSION']
+      capabilities['app']        = "bs://#{ENV['APP_URL']}" if ENV['APP_URL']
+      capabilities['app']        = ENV['APP_ID'] if ENV['APP_ID']
+      capabilities['realMobile'] = true
+      capabilities['project']    = ENV['AUTOMATE_PROJECT'] if ENV['AUTOMATE_PROJECT']
+      capabilities['build']      = ENV['AUTOMATE_BUILD'] if ENV['AUTOMATE_BUILD']
+      capabilities['deviceOrientation']  = ENV['ORIENTATION'] if ENV['ORIENTATION']
+      capabilities['browserstack.debug'] = true
+      capabilities['browserstack.video'] = ENV['RECORD_VIDEO'] if ENV['RECORD_VIDEO']
+      capabilities['browserstack.debug'] = 'true'
+
+      appium_lib_options = { server_url: endpoint }
+      desired_capabilities = {
+          appium_lib:  appium_lib_options,
+          caps:        capabilities
+      }
+      desired_capabilities
     end
   end
 end

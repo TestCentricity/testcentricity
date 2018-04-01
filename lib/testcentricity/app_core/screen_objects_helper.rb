@@ -15,17 +15,8 @@ module TestCentricity
       define_method(trait_name.to_s, &block)
     end
 
-    # def self.element(element_name, locator)
-    #   class_eval(%(def #{element_name};@#{element_name} ||= TestCentricity::AppUIElement.new("#{element_name}", self, #{locator}, :page);end))
-    # end
-
     def self.element(element_name, locator)
-      define_method(element_name) do
-        ivar_name = "@#{element_name}"
-        ivar = instance_variable_get(ivar_name)
-        return ivar if ivar
-        instance_variable_set(ivar_name, TestCentricity::AppUIElement.new(element_name, self, locator, :page))
-      end
+      define_page_element(element_name, TestCentricity::AppUIElement, locator)
     end
 
     def self.elements(element_hash)
@@ -34,17 +25,8 @@ module TestCentricity
       end
     end
 
-    # def self.button(element_name, locator)
-    #   class_eval(%(def #{element_name};@#{element_name} ||= TestCentricity::AppButton.new("#{element_name}", self, #{locator}, :page);end))
-    # end
-
     def self.button(element_name, locator)
-      define_method(element_name) do
-        ivar_name = "@#{element_name}"
-        ivar = instance_variable_get(ivar_name)
-        return ivar if ivar
-        instance_variable_set(ivar_name, TestCentricity::AppButton.new(element_name, self, locator, :page))
-      end
+      define_page_element(element_name, TestCentricity::AppButton, locator)
     end
 
     def self.buttons(element_hash)
@@ -53,17 +35,8 @@ module TestCentricity
       end
     end
 
-    # def self.textfield(element_name, locator)
-    #   class_eval(%(def #{element_name};@#{element_name} ||= TestCentricity::AppTextField.new("#{element_name}", self, #{locator}, :page);end))
-    # end
-
     def self.textfield(element_name, locator)
-      define_method(element_name) do
-        ivar_name = "@#{element_name}"
-        ivar = instance_variable_get(ivar_name)
-        return ivar if ivar
-        instance_variable_set(ivar_name, TestCentricity::AppTextField.new(element_name, self, locator, :page))
-      end
+      define_page_element(element_name, TestCentricity::AppTextField, locator)
     end
 
     def self.textfields(element_hash)
@@ -72,17 +45,8 @@ module TestCentricity
       end
     end
 
-    # def self.switch(element_name, locator)
-    #   class_eval(%(def #{element_name};@#{element_name} ||= TestCentricity::AppSwitch.new("#{element_name}", self, #{locator}, :page);end))
-    # end
-
     def self.switch(element_name, locator)
-      define_method(element_name) do
-        ivar_name = "@#{element_name}"
-        ivar = instance_variable_get(ivar_name)
-        return ivar if ivar
-        instance_variable_set(ivar_name, TestCentricity::AppSwitch.new(element_name, self, locator, :page))
-      end
+      define_page_element(element_name, TestCentricity::AppSwitch, locator)
     end
 
     def self.switches(element_hash)
@@ -91,17 +55,8 @@ module TestCentricity
       end
     end
 
-    # def self.checkbox(element_name, locator)
-    #   class_eval(%(def #{element_name};@#{element_name} ||= TestCentricity::AppCheckBox.new("#{element_name}", self, #{locator}, :page);end))
-    # end
-
     def self.checkbox(element_name, locator)
-      define_method(element_name) do
-        ivar_name = "@#{element_name}"
-        ivar = instance_variable_get(ivar_name)
-        return ivar if ivar
-        instance_variable_set(ivar_name, TestCentricity::AppCheckBox.new(element_name, self, locator, :page))
-      end
+      define_page_element(element_name, TestCentricity::AppCheckBox, locator)
     end
 
     def self.checkboxes(element_hash)
@@ -110,17 +65,8 @@ module TestCentricity
       end
     end
 
-    # def self.label(element_name, locator)
-    #   class_eval(%(def #{element_name};@#{element_name} ||= TestCentricity::AppLabel.new("#{element_name}", self, #{locator}, :page);end))
-    # end
-
     def self.label(element_name, locator)
-      define_method(element_name) do
-        ivar_name = "@#{element_name}"
-        ivar = instance_variable_get(ivar_name)
-        return ivar if ivar
-        instance_variable_set(ivar_name, TestCentricity::AppLabel.new(element_name, self, locator, :page))
-      end
+      define_page_element(element_name, TestCentricity::AppLabel, locator)
     end
 
     def self.labels(element_hash)
@@ -129,17 +75,8 @@ module TestCentricity
       end
     end
 
-    # def self.list(element_name, locator)
-    #   class_eval(%(def #{element_name};@#{element_name} ||= TestCentricity::AppList.new("#{element_name}", self, #{locator}, :page);end))
-    # end
-
     def self.list(element_name, locator)
-      define_method(element_name) do
-        ivar_name = "@#{element_name}"
-        ivar = instance_variable_get(ivar_name)
-        return ivar if ivar
-        instance_variable_set(ivar_name, TestCentricity::AppList.new(element_name, self, locator, :page))
-      end
+      define_page_element(element_name, TestCentricity::AppList, locator)
     end
 
     def self.lists(element_hash)
@@ -148,17 +85,8 @@ module TestCentricity
       end
     end
 
-    # def self.selectlist(element_name, locator)
-    #   class_eval(%(def #{element_name};@#{element_name} ||= TestCentricity::AppSelectList.new("#{element_name}", self, #{locator}, :page);end))
-    # end
-
     def self.selectlist(element_name, locator)
-      define_method(element_name) do
-        ivar_name = "@#{element_name}"
-        ivar = instance_variable_get(ivar_name)
-        return ivar if ivar
-        instance_variable_set(ivar_name, TestCentricity::AppSelectList.new(element_name, self, locator, :page))
-      end
+      define_page_element(element_name, TestCentricity::AppSelectList, locator)
     end
 
     def self.selectlists(element_hash)
@@ -167,17 +95,8 @@ module TestCentricity
       end
     end
 
-    # def self.image(element_name, locator)
-    #   class_eval(%(def #{element_name};@#{element_name} ||= TestCentricity::AppImage.new("#{element_name}", self, #{locator}, :page);end))
-    # end
-
     def self.image(element_name, locator)
-      define_method(element_name) do
-        ivar_name = "@#{element_name}"
-        ivar = instance_variable_get(ivar_name)
-        return ivar if ivar
-        instance_variable_set(ivar_name, TestCentricity::AppImage.new(element_name, self, locator, :page))
-      end
+      define_page_element(element_name, TestCentricity::AppImage, locator)
     end
 
     def self.images(element_hash)
@@ -186,21 +105,12 @@ module TestCentricity
       end
     end
 
-    # def self.alert(element_name, locator)
-    #   class_eval(%(def #{element_name};@#{element_name} ||= TestCentricity::AppAlert.new("#{element_name}", self, #{locator}, :page);end))
-    # end
-
     def self.alert(element_name, locator)
-      define_method(element_name) do
-        ivar_name = "@#{element_name}"
-        ivar = instance_variable_get(ivar_name)
-        return ivar if ivar
-        instance_variable_set(ivar_name, TestCentricity::AppAlert.new(element_name, self, locator, :page))
-      end
+      define_page_element(element_name, TestCentricity::AppAlert, locator)
     end
 
-    def self.section(section_name, class_name, locator = 0)
-      class_eval(%(def #{section_name};@#{section_name} ||= #{class_name}.new("#{section_name}", self, #{locator}, :page);end))
+    def self.section(section_name, obj, locator = 0)
+      define_page_element(section_name, obj, locator)
     end
 
     def self.sections(section_hash)
@@ -342,6 +252,17 @@ module TestCentricity
             end
           end
         end
+      end
+    end
+
+    private
+    
+    def self.define_page_element(element_name, obj, locator)
+      define_method(element_name) do
+        ivar_name = "@#{element_name}"
+        ivar = instance_variable_get(ivar_name)
+        return ivar if ivar
+        instance_variable_set(ivar_name, obj.new(element_name, self, locator, :page))
       end
     end
   end
