@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    testcentricity (2.4.0)
+    testcentricity (2.4.2)
       appium_lib
       browserstack-local
       capybara (>= 2.15, < 3.0)
