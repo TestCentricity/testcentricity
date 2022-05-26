@@ -1,0 +1,145 @@
+<% desktop = "--require features BROWSER_TILE=true BROWSER_SIZE=1300,1000 --publish-quiet" %>
+<% mobile  = "--require features --publish-quiet" %>
+<% reports = "--require features --format pretty --format html --out reports/test_results.html --format junit --out reports --format json --out reports/test_results.json" %>
+<% regression = "--tags '@regression and (not @wip and not @failing)' --require features" %>
+<% acceptance = "--tags '@bat and (not @wip and not @failing)' --require features" %>
+
+
+#==============
+# generic test context profiles
+#==============
+
+failing: --tags '@failing and not @wip'
+wip:     --tags '@wip and not @failing'
+dev:     --tags '@dev and (not @wip and not @failing)'
+regress: <%= regression %>
+bvt:     <%= acceptance %>
+
+
+#==============
+# test reporting profiles
+#==============
+
+report:   <%= reports %> REPORTING=true
+
+
+#==============
+# conditionally load Page and Screen Object implementations based on which target platform we're running on
+#==============
+
+ios:     PLATFORM=ios --tags @ios -r features/support/ios -e features/support/android
+android: PLATFORM=android --tags @android -r features/support/android -e features/support/ios
+web:     PLATFORM=web --tags @web -r features/support/web -e features/support/ios -e features/support/android
+
+
+#==============
+# target_test_environment profiles
+#==============
+
+local: TEST_ENVIRONMENT=LOCAL
+debug: DEBUG=true
+
+
+#==============
+# profiles for mobile device screen orientation
+#==============
+
+landscape: ORIENTATION=landscape
+portrait:  ORIENTATION=portrait
+
+
+#==============
+# profile to start Appium Server prior to running mobile browser tests on iOS or Android simulators or physical devices
+#==============
+run_appium: APPIUM_SERVER=run
+upload_app: UPLOAD_APP=true
+
+
+#==============
+# profiles for native iOS apps hosted within XCode iOS simulators
+# NOTE: Requires installation of XCode, iOS version specific target simulators, and Appium
+#==============
+
+appium_ios: WEB_BROWSER=appium --profile ios AUTOMATION_ENGINE=XCUITest APP_PLATFORM_NAME="iOS" NEW_COMMAND_TIMEOUT="30" <%= mobile %>
+app_ios_14: --profile appium_ios APP_VERSION="14.5"
+app_ios_15: --profile appium_ios APP_VERSION="15.4"
+
+iphone_12PM_14_sim: --profile app_ios_14 DEVICE_TYPE=phone APP_DEVICE="iPhone 12 Pro Max"
+iphone_13PM_15_sim: --profile app_ios_15 DEVICE_TYPE=phone APP_DEVICE="iPhone 13 Pro Max"
+iphone_11_14_sim:   --profile app_ios_14 DEVICE_TYPE=phone APP_DEVICE="iPhone 11"
+ipad_pro_12_15_sim: --profile app_ios_15 DEVICE_TYPE=tablet APP_DEVICE="iPad Pro (12.9-inch) (5th generation)"
+ios_sim:            --profile iphone_13PM_15_sim --profile local --profile run_appium
+
+
+#==============
+# profiles for native Android apps hosted within Android Studio Android Virtual Device emulators
+# NOTE: Requires installation of Android Studio, Android version specific virtual device simulators, and Appium
+#==============
+
+appium_android:    WEB_BROWSER=appium --profile android AUTOMATION_ENGINE=UiAutomator2 APP_PLATFORM_NAME="Android" <%= mobile %>
+app_android_12:    --profile appium_android APP_VERSION="12.0"
+pixel_5_api31_sim: --profile app_android_12 DEVICE_TYPE=phone APP_DEVICE="Pixel_5_API_31"
+android_sim:       --profile pixel_5_api31_sim --profile local --profile run_appium
+
+
+#==============
+# profiles for remotely hosted devices on the BrowserStack service
+#==============
+
+browserstack: WEB_BROWSER=browserstack BS_USERNAME="<INSERT USER NAME HERE>" BS_AUTHKEY="<INSERT PASSWORD HERE>" TEST_CONTEXT="TestCentricity"
+
+# BrowserStack iOS real device native app profiles
+bs_ios:           --profile browserstack --profile ios BS_OS=ios <%= mobile %>
+bs_iphone:        --profile bs_ios DEVICE_TYPE=phone
+bs_iphone13PM_15: --profile bs_iphone BS_OS_VERSION="15" BS_DEVICE="iPhone 13 Pro Max"
+bs_iphone11_14:   --profile bs_iphone BS_OS_VERSION="14" BS_DEVICE="iPhone 11"
+
+# BrowserStack Android real device native app profiles
+bs_android: --profile browserstack --profile android BS_OS=android <%= mobile %>
+bs_pixel5:  --profile bs_android BS_DEVICE="Google Pixel 5" BS_OS_VERSION="12.0" DEVICE_TYPE=phone
+
+
+#==============
+# profiles for remotely hosted devices on the SauceLabs service
+#==============
+
+saucelabs: WEB_BROWSER=saucelabs SL_USERNAME="<INSERT USER NAME HERE>" SL_AUTHKEY="<INSERT PASSWORD HERE>" DATA_CENTER="us-west-1" AUTOMATE_PROJECT="TestCentricity - SauceLabs"
+
+# SauceLabs iOS real device native app profiles
+sl_ios:           --profile saucelabs --profile ios SL_OS=ios <%= mobile %>
+sl_iphone:        --profile sl_ios DEVICE_TYPE=phone
+sl_iphone13PM_15: --profile sl_iphone SL_DEVICE="iPhone 13 Pro Max Simulator" SL_OS_VERSION="15.4"
+
+# SauceLabs Android real device native app profiles
+sl_android: --profile saucelabs --profile android SL_OS=android <%= mobile %>
+sl_pixel5:  --profile sl_android SL_DEVICE="Google Pixel 5 GoogleAPI Emulator" SL_OS_VERSION="12.0" DEVICE_TYPE=phone
+
+
+#==============
+# profiles for remotely hosted devices on the TestingBot service
+#==============
+
+testingbot: WEB_BROWSER=testingbot TB_USERNAME="<INSERT USER NAME HERE>" TB_AUTHKEY="<INSERT PASSWORD HERE>" AUTOMATE_PROJECT="TestCentricity - TestingBot"
+
+# TestingBot iOS real device native app profiles
+tb_ios:               --profile testingbot --profile ios TB_OS=iOS <%= mobile %>
+tb_iphone:            --profile tb_ios DEVICE_TYPE=phone
+tb_iphone11_14_dev:   --profile tb_iphone TB_OS_VERSION="14.0" TB_DEVICE="iPhone 11" REAL_DEVICE=true
+tb_iphone11_14_sim:   --profile tb_iphone TB_OS_VERSION="14.2" TB_DEVICE="iPhone 11"
+tb_iphone13PM_15_sim: --profile tb_iphone TB_OS_VERSION="15.4" TB_DEVICE="iPhone 13 Pro Max"
+
+# TestingBot Android real device native app profiles
+tb_android:    --profile testingbot --profile android TB_OS=Android <%= mobile %>
+tb_pixel_dev:  --profile tb_android TB_DEVICE="Pixel" TB_OS_VERSION="9.0" DEVICE_TYPE=phone REAL_DEVICE=true
+tb_pixel6_sim: --profile tb_android TB_DEVICE="Pixel 6" TB_OS_VERSION="12.0" DEVICE_TYPE=phone
+
+
+#==============
+# profiles for remotely hosted devices on the LambdaTest service
+#==============
+
+lambdatest: WEB_BROWSER=lambdatest LT_USERNAME="<INSERT USER NAME HERE>" LT_AUTHKEY="<INSERT PASSWORD HERE>" AUTOMATE_PROJECT="TestCentricity - LambdaTest"
+
+# LambdaTest iOS real device native app profiles
+lt_ios:    --profile lambdatest --profile ios LT_OS=iOS <%= mobile %>
+lt_iphone: --profile lt_ios DEVICE_TYPE=phone

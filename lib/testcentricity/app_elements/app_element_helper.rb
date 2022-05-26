@@ -88,6 +88,8 @@ module TestCentricity
       end
     end
 
+    alias value get_value
+
     def get_caption
       obj = element
       object_not_found_exception(obj)
@@ -98,17 +100,24 @@ module TestCentricity
         else
           obj.text
         end
-      elsif Environ.device_os == :ios
+      elsif Environ.is_ios?
         case obj.tag_name
         when 'XCUIElementTypeNavigationBar'
-          obj.attribute('name')
+          obj.attribute(:name)
         else
-          obj.attribute('label')
+          obj.attribute(:label)
         end
       else
-        obj.text
+        caption = obj.text
+        if caption.blank? && obj.attribute(:class) == 'android.view.ViewGroup'
+          caption_obj = obj.find_element(:xpath, '//android.widget.TextView')
+          caption = caption_obj.text
+        end
+        caption
       end
     end
+
+    alias caption get_caption
 
     def exists?
       begin
@@ -297,8 +306,8 @@ module TestCentricity
     def scroll(direction)
       obj = element
       object_not_found_exception(obj)
-      if Environ.device_os == :ios
-        execute_script('mobile: scroll', direction: direction.to_s, element: obj)
+      if Environ.is_ios?
+        $driver.execute_script('mobile: scroll', direction: direction.to_s, element: obj)
       else
         case direction
         when :down
@@ -323,8 +332,8 @@ module TestCentricity
     def swipe(direction)
       obj = element
       object_not_found_exception(obj)
-      if Environ.device_os == :ios
-        execute_script('mobile: swipe', direction: direction.to_s, element: obj)
+      if Environ.is_ios?
+        $driver.execute_script('mobile: swipe', direction: direction.to_s, element: obj)
       else
         actions = Appium::TouchAction.new
         actions.scroll(element: obj).perform

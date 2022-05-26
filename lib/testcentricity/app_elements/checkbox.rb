@@ -8,7 +8,7 @@ module TestCentricity
     def checked?
       obj = element
       object_not_found_exception(obj)
-      obj.attribute('checked') == 'true'
+      obj.selected?
     end
 
     # Set the check state of a checkbox object.
@@ -33,9 +33,9 @@ module TestCentricity
       obj = element
       object_not_found_exception(obj)
       if state
-        obj.click unless obj.attribute('checked') == 'true'
+        obj.click unless obj.selected?
       else
-        obj.click if obj.attribute('checked') == 'true'
+        obj.click if obj.selected?
       end
     end
   end
