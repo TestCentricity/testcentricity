@@ -20,7 +20,7 @@ Gem::Specification.new do |spec|
   spec.homepage      = 'https://github.com/TestCentricity/testcentricity'
   spec.license       = 'BSD-3-Clause'
   spec.metadata = {
-    'changelog_uri' => 'https://github.com/TestCentricity/testcentricity/blob/main/CHANGELOG.md',
+    'changelog_uri' => 'https://github.com/TestCentricity/testcentricity/blob/master/CHANGELOG.md',
     'documentation_uri' => 'https://www.rubydoc.info/gems/testcentricity'
   }
 
