@@ -2,6 +2,13 @@
 All notable changes to this project will be documented in this file.
 
 
+## [3.0.2] - 26-MAY-2022
+
+### Fixed
+* Added runtime dependencies `curb` and `json` to gemspec.
+* Fixed CHANGELOG url in gemspec.
+
+
 ## [3.0.1] - 26-MAY-2022
 
 ### Added
