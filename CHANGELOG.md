@@ -2,7 +2,7 @@
 All notable changes to this project will be documented in this file.
 
 
-## [3.0.0] - 26-MAY-2022
+## [3.0.1] - 26-MAY-2022
 
 ### Added
 * Added support for testing on cloud hosted iOS and Android simulators and real devices on BrowserStack, SauceLabs, and TestingBot services.
