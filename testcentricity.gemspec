@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.required_ruby_version = '>= 2.7.5'
   spec.authors       = ['A.J. Mrozinski']
   spec.email         = ['testcentricity@gmail.com']
-  spec.summary       = %q{A Page Object Model Framework for desktop/mobile web and native mobile app testing}
+  spec.summary       = %q{A Page Object Model Framework for native mobile app and desktop/mobile web portal testing}
   spec.description   = '
     The TestCentricity™ core framework for native mobile iOS and Android apps and desktop/mobile web testing implements a Page Object
     Model DSL for use with Cucumber, Appium, Capybara, and Selenium-Webdriver v4.x. The gem also facilitates the configuration of the
