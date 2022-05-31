@@ -17,6 +17,9 @@ module WorldPages
       products_screen:         ProductsScreen,
       checkout_address_screen: CheckoutAddressScreen,
       checkout_payment_screen: CheckoutPaymentScreen,
+      qr_code_scanner_screen:  QRCodeScannerScreen,
+      geo_location_screen:     GeoLocationScreen,
+      biometrics_screen:       BiometricsScreen,
       saucebot_video_screen:   SauceBotScreen
     }
   end

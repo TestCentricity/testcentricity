@@ -21,6 +21,7 @@ bvt:     <%= acceptance %>
 #==============
 
 report:   <%= reports %> REPORTING=true
+parallel: PARALLEL=true REPORTING=true --require features --format pretty --format html --out reports/test_results<%= ENV['TEST_ENV_NUMBER'] %>.html --format junit --out reports --format json --out reports/test_results<%= ENV['TEST_ENV_NUMBER'] %>.json
 
 
 #==============
