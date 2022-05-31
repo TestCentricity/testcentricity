@@ -1,11 +1,15 @@
-Form_data:
-  primary:
-    username: "Ignatius von Snicklefritz"
-    password: "T0p_Sekrit"
-    image_filename: "Wilder.jpg"
-    multi_select: "Selection Item 2"
-    drop_down_item: "Drop Down Item 5"
-    check1: true
-    check2: true
-    check3: false
-    radio_select: 2
+
+User_creds:
+  valid_data:
+    username: 'bob@example.com'
+    password: '10203040'
+  invalid_user:
+    username: 'iggy.snicklefritz@example.com'
+    password: '10203040'
+  locked_account:
+    username: 'alice@example.com'
+    password: '10203040'
+  no_username:
+    password: '10203040'
+  no_password:
+    username: 'bob@example.com'

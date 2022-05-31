@@ -18,6 +18,7 @@ When(/^I (?:click|tap) the ([^\"]*) navigation menu item$/) do |screen_name|
   # find and navigate to the specified target page/screen
   target_page = PageManager.find_page(screen_name)
   target_page.navigate_to
+  PageManager.current_page = target_page
 end
 
 
@@ -30,25 +31,9 @@ Then(/^I expect the (.*) (?:page|screen) to be correctly displayed$/) do |screen
 end
 
 
-When(/^I enter user credentials with (.*)$/) do |reason|
-  case reason.gsub(/\s+/, '_').downcase.to_sym
-  when :valid_data
-    username = 'bob@example.com'
-    password = '10203040'
-  when :invalid_user
-    username = 'iggy.snicklefritz@example.com'
-    password = '10203040'
-  when :locked_account
-    username = 'alice@example.com'
-    password = '10203040'
-  when :no_username
-    password = '10203040'
-  when :no_password
-    username = 'bob@example.com'
-  else
-    raise "#{reason} is not a valid selector"
-  end
-  login_screen.login(username, password)
+When(/^I enter user credentials with (.*)$/) do |creds|
+  cred_data = user_data_source.find_user_creds(creds.gsub(/\s+/, '_').downcase)
+  login_screen.login(cred_data.username, cred_data.password)
 end
 
 
@@ -69,4 +54,9 @@ end
 
 Then(/^I expect the navigation menu to be hidden$/) do
   PageManager.current_page.verify_nav_menu(state = :closed)
+end
+
+
+When(/^I (.*) the popup request modal$/) do |action|
+  PageManager.current_page.modal_action(action)
 end

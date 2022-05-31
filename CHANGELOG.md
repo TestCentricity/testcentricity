@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file.
 
 
+## [3.0.3] - 30-MAY-2022
+
+### Added
+* Added `AppAlert.await_and_respond` method.
+
+
 ## [3.0.2] - 26-MAY-2022
 
 ### Fixed

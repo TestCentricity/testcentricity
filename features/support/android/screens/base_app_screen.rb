@@ -8,6 +8,8 @@ class BaseAppScreen < TestCentricity::ScreenObject
           cart_button:   { accessibility_id: 'cart badge' }
   labels  header_label:  { xpath: '//android.view.ViewGroup[@content-desc="container header"]/android.widget.TextView' },
           cart_quantity: { xpath: '//android.view.ViewGroup[@content-desc="cart badge"]/android.widget.TextView' }
+  alerts  grant_modal:   { id: 'com.android.permissioncontroller:id/grant_dialog' },
+          alert_modal:   { id: 'android:id/parentPanel' }
   section :nav_menu,     NavMenu
 
   def verify_page_ui

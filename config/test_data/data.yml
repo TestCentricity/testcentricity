@@ -7,4 +7,3 @@ Environments:
     IOS_APP_PATH: '/Users/Shared/Test_Apps/iOS/MyRNDemoApp.app'
     IOS_IPA_PATH: '/Users/Shared/Test_Apps/iOS/iOS-Real-Device-MyRNDemoApp.1.3.0-162.ipa'
     ANDROID_APK_PATH: '/Users/Shared/Test_Apps/Android/Android-MyDemoAppRN.1.2.0.build-231.apk'
-

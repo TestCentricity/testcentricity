@@ -29,3 +29,15 @@ Feature:  Screen Navigation
       |Login          |
       |Webview        |
       |SauceBot Video |
+
+
+  Scenario Outline:  Verify screen navigation features with popup modals
+    When I tap the <screen_name> navigation menu item
+    And I accept the popup request modal
+    Then I expect the <screen_name> screen to be correctly displayed
+
+    Examples:
+      |screen_name     |
+      |QR Code Scanner |
+      |Geo Location    |
+      |Biometrics      |

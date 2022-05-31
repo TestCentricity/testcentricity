@@ -4,8 +4,8 @@ require 'capybara/cucumber'
 require 'parallel_tests'
 require 'require_all'
 require 'simplecov'
-require 'testcentricity'
 require 'testcentricity_web'
+require 'testcentricity'
 
 include TestCentricity
 
@@ -14,6 +14,7 @@ SimpleCov.command_name("Features-#{ENV['PLATFORM']}-#{Time.now.strftime('%Y%m%d%
 require_relative 'world_data'
 require_relative 'world_pages'
 
+require_rel 'data'
 require_rel 'shared_components'
 
 # conditionally require page and section objects based on target platform

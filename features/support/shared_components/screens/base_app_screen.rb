@@ -28,4 +28,8 @@ module SharedBaseAppScreen
       raise "#{action} is not a valid selector"
     end
   end
+
+  def modal_action(action)
+    alert_modal.await_and_respond(action.downcase.to_sym, timeout = 1)
+  end
 end

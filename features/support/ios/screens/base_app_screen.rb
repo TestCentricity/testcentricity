@@ -5,6 +5,7 @@ class BaseAppScreen < TestCentricity::ScreenObject
 
   # Base App screen UI elements
   label    :header_label, { accessibility_id: 'container header' }
+  alert    :alert_modal,  { class: 'XCUIElementTypeAlert' }
   sections nav_bar:  NavBar,
            nav_menu: NavMenu
 
