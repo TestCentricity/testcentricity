@@ -43,6 +43,6 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency 'appium_lib'
   spec.add_runtime_dependency 'curb'
   spec.add_runtime_dependency 'json'
-  spec.add_runtime_dependency 'testcentricity_web', '>= 4.2.2'
+  spec.add_runtime_dependency 'testcentricity_web', '>= 4.2.4'
   spec.add_runtime_dependency 'test-unit'
 end

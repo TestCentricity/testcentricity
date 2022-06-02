@@ -24,3 +24,15 @@ Feature:  App screen deep links
       |Products |Checkout - Address |
       |Products |Checkout - Payment |
       |About    |Products           |
+
+
+  Scenario Outline:  Verify Product Item screen can be directly accessed via deep links
+    Given I am on the Products screen
+    And I access the data for product id <product_id>
+    When I load the Product Item screen
+    Then I expect the Product Item screen to be correctly displayed
+
+    Examples:
+      |product_id |
+      |1          |
+      |5          |

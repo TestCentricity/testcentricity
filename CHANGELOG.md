@@ -2,6 +2,16 @@
 All notable changes to this project will be documented in this file.
 
 
+## [3.0.4] - 02-JUNE-2022
+
+### Added
+* Added `AppUIElement.wait_until_enabled` method.
+
+### Updated
+* Incorporated all changes from the [TestCentricity™ Web gem](https://rubygems.org/gems/testcentricity_web) version 4.2.4, which is
+  bundled with this gem.
+
+
 ## [3.0.3] - 30-MAY-2022
 
 ### Added

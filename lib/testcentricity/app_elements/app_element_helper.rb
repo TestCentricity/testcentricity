@@ -174,12 +174,16 @@ module TestCentricity
     # @example
     #   run_button.wait_until_exists(0.5)
     #
-    def wait_until_exists(seconds = nil)
+    def wait_until_exists(seconds = nil, post_exception = true)
       timeout = seconds.nil? ? Environ.default_max_wait_time : seconds
       wait = Selenium::WebDriver::Wait.new(timeout: timeout)
       wait.until { exists? }
     rescue
-      raise "Could not find UI #{object_ref_message} after #{timeout} seconds" unless exists?
+      if post_exception
+        raise "Could not find UI #{object_ref_message} after #{timeout} seconds" unless exists?
+      else
+        exists?
+      end
     end
 
     # Wait until the object no longer exists, or until the specified wait time has expired. If the wait time is nil, then
@@ -189,12 +193,16 @@ module TestCentricity
     # @example
     #   logout_button.wait_until_gone(5)
     #
-    def wait_until_gone(seconds = nil)
+    def wait_until_gone(seconds = nil, post_exception = true)
       timeout = seconds.nil? ? Environ.default_max_wait_time : seconds
       wait = Selenium::WebDriver::Wait.new(timeout: timeout)
       wait.until { !exists? }
     rescue
-      raise "UI #{object_ref_message} remained visible after #{timeout} seconds" if exists?
+      if post_exception
+        raise "UI #{object_ref_message} remained visible after #{timeout} seconds" if exists?
+      else
+        exists?
+      end
     end
 
     # Wait until the object is visible, or until the specified wait time has expired. If the wait time is nil, then the
@@ -204,12 +212,16 @@ module TestCentricity
     # @example
     #   run_button.wait_until_visible(0.5)
     #
-    def wait_until_visible(seconds = nil)
+    def wait_until_visible(seconds = nil, post_exception = true)
       timeout = seconds.nil? ? Environ.default_max_wait_time : seconds
       wait = Selenium::WebDriver::Wait.new(timeout: timeout)
       wait.until { visible? }
     rescue
-      raise "Could not find UI #{object_ref_message} after #{timeout} seconds" unless visible?
+      if post_exception
+        raise "Could not find UI #{object_ref_message} after #{timeout} seconds" unless visible?
+      else
+        visible?
+      end
     end
 
     # Wait until the object is hidden, or until the specified wait time has expired. If the wait time is nil, then the
@@ -219,12 +231,35 @@ module TestCentricity
     # @example
     #   run_button.wait_until_hidden(10)
     #
-    def wait_until_hidden(seconds = nil)
+    def wait_until_hidden(seconds = nil, post_exception = true)
       timeout = seconds.nil? ? Environ.default_max_wait_time : seconds
       wait = Selenium::WebDriver::Wait.new(timeout: timeout)
       wait.until { hidden? }
     rescue
-      raise "UI #{object_ref_message} remained visible after #{timeout} seconds" if visible?
+      if post_exception
+        raise "UI #{object_ref_message} remained visible after #{timeout} seconds" if visible?
+      else
+        hidden?
+      end
+    end
+
+    # Wait until the object is enabled, or until the specified wait time has expired. If the wait time is nil, then the
+    # wait time will be Environ.default_max_wait_time.
+    #
+    # @param seconds [Integer or Float] wait time in seconds
+    # @example
+    #   run_button.wait_until_enabled(10)
+    #
+    def wait_until_enabled(seconds = nil, post_exception = true)
+      timeout = seconds.nil? ? Environ.default_max_wait_time : seconds
+      wait = Selenium::WebDriver::Wait.new(timeout: timeout)
+      wait.until { enabled? }
+    rescue
+      if post_exception
+        raise "UI #{object_ref_message} remained disabled after #{timeout} seconds" unless enabled?
+      else
+        enabled?
+      end
     end
 
     # Wait until the object's value equals the specified value, or until the specified wait time has expired. If the wait
@@ -237,12 +272,16 @@ module TestCentricity
     #     or
     #   total_weight_field.wait_until_value_is({ :greater_than => '250' }, 5)
     #
-    def wait_until_value_is(value, seconds = nil)
+    def wait_until_value_is(value, seconds = nil, post_exception = true)
       timeout = seconds.nil? ? Environ.default_max_wait_time : seconds
       wait = Selenium::WebDriver::Wait.new(timeout: timeout)
       wait.until { compare(value, get_value) }
     rescue
-      raise "Value of UI #{object_ref_message} failed to equal '#{value}' after #{timeout} seconds" unless get_value == value
+      if post_exception
+        raise "Value of UI #{object_ref_message} failed to equal '#{value}' after #{timeout} seconds" unless get_value == value
+      else
+        get_value == value
+      end
     end
 
     # Wait until the object's value changes to a different value, or until the specified wait time has expired. If the
@@ -252,13 +291,17 @@ module TestCentricity
     # @example
     #   basket_grand_total_label.wait_until_value_changes(5)
     #
-    def wait_until_value_changes(seconds = nil)
+    def wait_until_value_changes(seconds = nil, post_exception = true)
       value = get_value
       timeout = seconds.nil? ? Environ.default_max_wait_time : seconds
       wait = Selenium::WebDriver::Wait.new(timeout: timeout)
       wait.until { get_value != value }
     rescue
-      raise "Value of UI #{object_ref_message} failed to change from '#{value}' after #{timeout} seconds" if get_value == value
+      if post_exception
+        raise "Value of UI #{object_ref_message} failed to change from '#{value}' after #{timeout} seconds" if get_value == value
+      else
+        get_value == value
+      end
     end
 
     def width

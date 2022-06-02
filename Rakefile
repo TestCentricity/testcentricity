@@ -35,7 +35,7 @@ desc 'Run required specs and Cucumber features'
 task required: [:required_specs, :android_sim, :ios_sim]
 
 
-desc 'Run all specs and Cucumber features'
+desc 'Run all specs'
 task all_specs: [:required_specs, :web_specs]
 
 
@@ -52,7 +52,7 @@ end
 desc 'Build and release new version'
 task :release do
   version = TestCentricity::VERSION
-  puts "Releasing #{version}, y/n?"
+  puts "Releasing version #{version} of TestCentricity gem, y/n?"
   exit(1) unless $stdin.gets.chomp == 'y'
   sh 'gem build testcentricity.gemspec && ' \
      "gem push testcentricity-#{version}.gem"
