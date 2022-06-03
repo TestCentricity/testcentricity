@@ -65,3 +65,8 @@ end
 When(/^I access the data for product id (.*)$/) do |product_id|
   product_data_source.find_product(product_id)
 end
+
+
+When(/^I choose product item (.*) in the products list$/) do |product_id|
+  products_screen.choose_product_item(product_id)
+end

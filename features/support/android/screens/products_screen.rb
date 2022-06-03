@@ -24,4 +24,10 @@ class ProductsScreen < BaseAppScreen
     }
     verify_ui_states(ui)
   end
+
+  def choose_product_item(product_id)
+    product_data_source.find_product(product_id)
+    product_list_item.set_list_index(product_list, product_id)
+    product_list_item.click
+  end
 end

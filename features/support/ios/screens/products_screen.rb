@@ -20,7 +20,7 @@ class ProductsScreen < BaseAppScreen
     super
     ui = {
       header_label => { visible: true, caption: 'Products' },
-      # product_list => { visible: true, itemcount: 6 }
+      product_list => { visible: true, itemcount: 6 }
     }
     verify_ui_states(ui)
   end
