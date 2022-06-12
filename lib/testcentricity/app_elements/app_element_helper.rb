@@ -350,7 +350,7 @@ module TestCentricity
       obj = element
       object_not_found_exception(obj)
       if Environ.is_ios?
-        $driver.execute_script('mobile: scroll', direction: direction.to_s, element: obj)
+        $driver.execute_script('mobile: scroll', { direction: direction })
       else
         case direction
         when :down

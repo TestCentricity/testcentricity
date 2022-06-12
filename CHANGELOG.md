@@ -2,6 +2,16 @@
 All notable changes to this project will be documented in this file.
 
 
+## [3.0.5] - 12-JUNE-2022
+
+### Fixed
+* Fix `gemspec` to no longer include specs and cuke tests as part of deployment package for gem.
+
+### Updated
+* Incorporated all changes from the [TestCentricity™ Web gem](https://rubygems.org/gems/testcentricity_web) version 4.2.6, which is
+  bundled with this gem.
+
+
 ## [3.0.4] - 02-JUNE-2022
 
 ### Added

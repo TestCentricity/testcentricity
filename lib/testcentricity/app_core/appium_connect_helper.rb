@@ -271,6 +271,7 @@ module TestCentricity
         caps[:newCommandTimeout] = ENV['NEW_COMMAND_TIMEOUT'] if ENV['NEW_COMMAND_TIMEOUT']
         caps[:noReset] = ENV['APP_NO_RESET'] if ENV['APP_NO_RESET']
         caps[:fullReset] = ENV['APP_FULL_RESET'] if ENV['APP_FULL_RESET']
+        caps[:autoLaunch] = ENV['AUTO_LAUNCH'] if ENV['AUTO_LAUNCH']
         caps[:webkitDebugProxyPort] = ENV['WEBKIT_DEBUG_PROXY_PORT'] if ENV['WEBKIT_DEBUG_PROXY_PORT']
         caps[:webDriverAgentUrl] = ENV['WEBDRIVER_AGENT_URL'] if ENV['WEBDRIVER_AGENT_URL']
         caps[:wdaLocalPort] = ENV['WDA_LOCAL_PORT'] if ENV['WDA_LOCAL_PORT']

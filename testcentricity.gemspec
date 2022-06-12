@@ -24,9 +24,7 @@ Gem::Specification.new do |spec|
     'documentation_uri' => 'https://www.rubydoc.info/gems/testcentricity'
   }
 
-  spec.files         = `git ls-files -z`.split("\x0")
-  spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
-  spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
+  spec.files         = Dir.glob('lib/**/*') + %w[README.md CHANGELOG.md LICENSE.md .yardopts]
   spec.require_paths = ['lib']
   spec.requirements  << 'Appium, TestCentricity Web'
 
@@ -43,6 +41,6 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency 'appium_lib'
   spec.add_runtime_dependency 'curb'
   spec.add_runtime_dependency 'json'
-  spec.add_runtime_dependency 'testcentricity_web', '>= 4.2.4'
+  spec.add_runtime_dependency 'testcentricity_web', '>= 4.2.6'
   spec.add_runtime_dependency 'test-unit'
 end

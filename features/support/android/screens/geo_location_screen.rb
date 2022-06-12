@@ -10,6 +10,11 @@ class GeoLocationScreen < BaseAppScreen
   labels  latitude_data:          { accessibility_id: 'latitude data' },
           longitude_data:         { accessibility_id: 'longitude data' }
 
+  def verify_page_exists
+    modal_action('accept')
+    super
+  end
+
   def verify_page_ui
     super
     ui = {

@@ -19,7 +19,7 @@ Feature:  Screen Navigation
     Then I expect the navigation menu to be hidden
 
 
-  Scenario Outline:  Verify screen navigation features
+  Scenario Outline:  Verify screen navigation menu features
     When I tap the <screen_name> navigation menu item
     Then I expect the <screen_name> screen to be correctly displayed
 
@@ -31,7 +31,7 @@ Feature:  Screen Navigation
       |SauceBot Video |
 
 
-  Scenario Outline:  Verify screen navigation features with popup modals
+  Scenario Outline:  Verify screen navigation menu features with popup modals
     When I tap the <screen_name> navigation menu item
     And I accept the popup request modal
     Then I expect the <screen_name> screen to be correctly displayed
@@ -41,3 +41,13 @@ Feature:  Screen Navigation
       |QR Code Scanner |
       |Geo Location    |
       |Biometrics      |
+
+@!ios
+  Scenario Outline:  Verify Product Item screen is accessible via products grid selection
+    When I choose product item <product_id> in the products grid
+    Then I expect the Product Item screen to be correctly displayed
+
+    Examples:
+      |product_id |
+      |2          |
+      |1          |

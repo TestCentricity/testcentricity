@@ -1,8 +1,8 @@
-class ProductListItem < TestCentricity::ScreenSection
-  trait(:section_name)    { 'Product List Item' }
+class ProductGridItem < TestCentricity::ScreenSection
+  trait(:section_name)    { 'Product Grid Item' }
   trait(:section_locator) { { xpath: '//android.view.ViewGroup[@content-desc="store item"]' } }
 
-  # Product Cell Item UI elements
+  # Product Grid Item UI elements
   labels  product_name:  { xpath: '//android.widget.TextView[@content-desc="store item text"]' },
           product_price: { xpath: '//android.widget.TextView[@content-desc="store item price"]' }
   buttons review_star_1: { xpath: '//android.view.ViewGroup[@content-desc="review star 1"]' },

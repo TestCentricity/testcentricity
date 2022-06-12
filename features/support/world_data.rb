@@ -6,7 +6,8 @@ module WorldData
   def data_objects
     {
       user_data_source:    UserDataSource,
-      product_data_source: ProductDataSource
+      product_data_source: ProductDataSource,
+      cart_data_source:    CartDataSource
     }
   end
 end

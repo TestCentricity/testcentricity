@@ -1,5 +1,5 @@
-class ProductListItem < TestCentricity::ScreenSection
-  trait(:section_name)    { 'Product List Item' }
+class ProductGridItem < TestCentricity::ScreenSection
+  trait(:section_name)    { 'Product Grid Item' }
   trait(:section_locator) { { xpath: '//XCUIElementTypeOther[@name="store item"]' } }
 
   # Product Cell Item UI elements

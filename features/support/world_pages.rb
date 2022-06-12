@@ -16,6 +16,7 @@ module WorldPages
       webview_screen:          WebViewScreen,
       products_screen:         ProductsScreen,
       product_item_screen:     ProductItemScreen,
+      cart_screen:             CartScreen,
       checkout_address_screen: CheckoutAddressScreen,
       checkout_payment_screen: CheckoutPaymentScreen,
       qr_code_scanner_screen:  QRCodeScannerScreen,
