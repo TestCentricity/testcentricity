@@ -4,6 +4,8 @@ include TestCentricity
 Given(/^I have launched the SauceLabs My Demo app$/) do
   # activate the app
   AppiumConnect.launch_app
+  # ensure Shopping Cart is empty
+  CartData.current = nil
 end
 
 
@@ -67,6 +69,17 @@ When(/^I access the data for product id (.*)$/) do |product_id|
 end
 
 
-When(/^I choose product item (.*) in the products list$/) do |product_id|
+When(/^I choose product item (.*) in the products grid$/) do |product_id|
   products_screen.choose_product_item(product_id)
+end
+
+And(/^the shopping cart is (.*)$/) do |state|
+  case state.downcase.to_sym
+  when :full, :populated
+    cart_data_source.load_cart
+  when :empty
+    CartData.current = nil
+  else
+    raise "#{state} is not a valid selector"
+  end
 end

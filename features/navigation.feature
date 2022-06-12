@@ -42,12 +42,12 @@ Feature:  Screen Navigation
       |Geo Location    |
       |Biometrics      |
 
-@dev
-  Scenario Outline:  Verify Product Item screen is accessible via products list selection
-    When I choose product item <product_id> in the products list
+@!ios
+  Scenario Outline:  Verify Product Item screen is accessible via products grid selection
+    When I choose product item <product_id> in the products grid
     Then I expect the Product Item screen to be correctly displayed
 
     Examples:
       |product_id |
       |2          |
-      |3          |
+      |1          |

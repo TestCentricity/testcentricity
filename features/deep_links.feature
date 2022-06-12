@@ -21,6 +21,8 @@ Feature:  App screen deep links
       |Products |About              |
       |Products |Login              |
       |Products |Webview            |
+      |Products |QR Code Scanner    |
+      |Products |Geo Location       |
       |Products |Checkout - Address |
       |Products |Checkout - Payment |
       |About    |Products           |
@@ -36,3 +38,15 @@ Feature:  App screen deep links
       |product_id |
       |1          |
       |5          |
+
+
+  Scenario Outline:  Verify empty and populated Cart screen can be directly accessed via deep links
+    Given I am on the Products screen
+    And the shopping cart is <state>
+    When I load the Cart screen
+    Then I expect the Cart screen to be correctly displayed
+
+    Examples:
+      |state |
+      |empty |
+      |full  |

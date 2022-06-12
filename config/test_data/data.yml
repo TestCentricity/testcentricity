@@ -74,3 +74,11 @@ Products:
     review: 4
     colors: ['BLACK', 'GRAY', 'RED']
     defaultColor: 'RED'
+
+# This section is populated with Cart data required for testing the Shopping Cart features
+Cart_data:
+  deep_link_test:
+    cart_items_deep_link: 'id=1&amount=1&color=blue,id=1&amount=1&color=red,id=3&amount=2&color=black,id=6&amount=1&color=red'
+    num_items: 4
+    total_quantity: 5
+    total_price: '$107.95'

@@ -189,7 +189,6 @@ module TestCentricity
       end
     end
 
-
     def click
       section = find_section
       section_not_found_exception(section)

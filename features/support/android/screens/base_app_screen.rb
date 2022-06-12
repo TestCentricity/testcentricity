@@ -17,6 +17,11 @@ class BaseAppScreen < TestCentricity::ScreenObject
       menu_button => { visible: true, enabled: true },
       cart_button => { visible: true, enabled: true }
     }
+    ui[cart_quantity] = if CartData.current.nil?
+                          { visible: false }
+                        else
+                          { visible: true, caption: CartData.current.num_items.to_s }
+                        end
     verify_ui_states(ui)
   end
 
