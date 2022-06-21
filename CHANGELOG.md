@@ -2,6 +2,13 @@
 All notable changes to this project will be documented in this file.
 
 
+## [3.0.6] - 21-JUNE-2022
+
+### Fixed
+* `AppButton.get_caption` correctly returns captions of React Native buttons on Android platform where button caption object
+hierarchy is `//android.widget.Button/android.widget.ViewGroup/android.widget.TextView`.
+
+
 ## [3.0.5] - 12-JUNE-2022
 
 ### Fixed
