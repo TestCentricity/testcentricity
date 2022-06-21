@@ -109,9 +109,19 @@ module TestCentricity
         end
       else
         caption = obj.text
-        if caption.blank? && obj.attribute(:class) == 'android.view.ViewGroup'
-          caption_obj = obj.find_element(:xpath, '//android.widget.TextView')
-          caption = caption_obj.text
+        if caption.blank?
+          case obj.attribute(:class)
+          when 'android.view.ViewGroup'
+            caption_obj = obj.find_element(:xpath, '//android.widget.TextView')
+            caption = caption_obj.text
+          when 'android.widget.Button'
+            caption_obj = obj.find_element(:xpath, '//android.widget.TextView')
+            caption = caption_obj.text
+            if caption.blank?
+              caption_obj = obj.find_element(:xpath, '//android.widget.ViewGroup/android.widget.TextView')
+              caption = caption_obj.text
+            end
+          end
         end
         caption
       end
