@@ -29,18 +29,18 @@ Gem::Specification.new do |spec|
   spec.requirements  << 'Appium, TestCentricity Web'
 
   spec.add_development_dependency 'bundler'
-  spec.add_development_dependency 'cucumber'
+  spec.add_development_dependency 'cucumber', '8.0.0'
   spec.add_development_dependency 'cuke_modeler', '~> 3.0'
   spec.add_development_dependency 'parallel_tests'
   spec.add_development_dependency 'rake'
   spec.add_development_dependency 'require_all', '=1.5.0'
-  spec.add_development_dependency 'rspec', '~> 3.10'
+  spec.add_development_dependency 'rspec', '>= 3.11.0'
   spec.add_development_dependency 'simplecov', ['~> 0.18']
   spec.add_development_dependency 'yard', ['>= 0.9.0']
 
   spec.add_runtime_dependency 'appium_lib'
   spec.add_runtime_dependency 'curb'
   spec.add_runtime_dependency 'json'
-  spec.add_runtime_dependency 'testcentricity_web', '>= 4.2.6'
+  spec.add_runtime_dependency 'testcentricity_web', '>= 4.3.0'
   spec.add_runtime_dependency 'test-unit'
 end

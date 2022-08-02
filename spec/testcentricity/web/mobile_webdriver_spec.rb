@@ -6,7 +6,7 @@ describe TestCentricity::WebDriverConnect, web: true do
     @environs ||= EnvironData
     @environs.find_environ('LOCAL', :yaml)
     ENV['SELENIUM'] = ''
-    ENV['WEB_BROWSER'] = 'appium'
+    ENV['DRIVER'] = 'appium'
     ENV['DEVICE_TYPE'] = 'tablet'
     # start Appium server
     $server = TestCentricity::AppiumServer.new
@@ -21,7 +21,7 @@ describe TestCentricity::WebDriverConnect, web: true do
       ENV['APP_VERSION'] = '15.4'
       ENV['APP_DEVICE'] = 'iPad Pro (12.9-inch) (5th generation)'
       WebDriverConnect.initialize_web_driver
-      expect(Environ.browser).to eq(:appium)
+      expect(Environ.browser).to eq(:safari)
       expect(Environ.platform).to eq(:mobile)
       expect(Environ.headless).to eq(false)
       expect(Environ.session_state).to eq(:running)
@@ -50,7 +50,7 @@ describe TestCentricity::WebDriverConnect, web: true do
         }
       }
       WebDriverConnect.initialize_web_driver(caps)
-      expect(Environ.browser).to eq(:appium)
+      expect(Environ.browser).to eq(:safari)
       expect(Environ.platform).to eq(:mobile)
       expect(Environ.headless).to eq(false)
       expect(Environ.session_state).to eq(:running)
@@ -69,7 +69,7 @@ describe TestCentricity::WebDriverConnect, web: true do
       ENV['APP_VERSION'] = '12.0'
       ENV['APP_DEVICE'] = 'Pixel_C_API_31'
       WebDriverConnect.initialize_web_driver
-      expect(Environ.browser).to eq(:appium)
+      expect(Environ.browser).to eq(:chrome)
       expect(Environ.platform).to eq(:mobile)
       expect(Environ.headless).to eq(false)
       expect(Environ.session_state).to eq(:running)
@@ -98,7 +98,7 @@ describe TestCentricity::WebDriverConnect, web: true do
         }
       }
       WebDriverConnect.initialize_web_driver(caps)
-      expect(Environ.browser).to eq(:appium)
+      expect(Environ.browser).to eq(:chrome)
       expect(Environ.platform).to eq(:mobile)
       expect(Environ.headless).to eq(false)
       expect(Environ.session_state).to eq(:running)

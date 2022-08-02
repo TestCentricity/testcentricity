@@ -5,10 +5,10 @@
 
 
 The TestCentricity™ core framework for native mobile iOS and Android apps and desktop/mobile web testing implements a Screen
-and Page Object Model DSL for use with Cucumber (version 7.x or greater), Appium, Capybara, and Selenium-Webdriver (version 4.x). It also facilitates
-the configuration of the appropriate Appium capabilities and driver required to establish a connection with locally hosted or
-cloud hosted (using BrowserStack, Sauce Labs, or TestingBot services) iOS and Android real devices or simulators. For more
-information on desktop/mobile web testing with this gem, refer to docs for the [TestCentricity™ Web gem](https://www.rubydoc.info/gems/testcentricity_web)
+and Page Object Model DSL for use with Cucumber (version 7.x or greater), Appium, Capybara, and Selenium-Webdriver (version
+4.3). It also facilitates the configuration of the appropriate Appium capabilities and driver required to establish a connection
+with locally hosted or cloud hosted (using BrowserStack, Sauce Labs, or TestingBot services) iOS and Android real devices or
+simulators. For more information on desktop/mobile web testing with this gem, refer to docs for the [TestCentricity™ Web gem](https://www.rubydoc.info/gems/testcentricity_web)
 
 The TestCentricity™ gem supports automated testing of native iOS and Android apps running on the following mobile test targets:
 * locally hosted iOS device simulators or physical iOS devices (using Appium and XCode on macOS)
@@ -858,7 +858,9 @@ tests, place the code shown below into your `hooks.rb` file.
     BeforeAll do
       # start Appium Server if command line option was specified and target browser is mobile simulator or device
       if ENV['APPIUM_SERVER'] == 'run' && Environ.driver == :appium
-       end
+        $server = TestCentricity::AppiumServer.new
+        $server.start
+      end
     end
     
     AfterAll do
@@ -885,24 +887,24 @@ The Appium server must be running prior to invoking Cucumber to run your feature
 
 Once your test environment is properly configured, the following **Environment Variables** must be set as described in the table below.
 
-| **Environment Variable**   | **Description**                                                                                                                                                       |
-|----------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `WEB_BROWSER`              | Must be set to `appium`                                                                                                                                               |
-| `APP_PLATFORM_NAME`        | Must be set to `iOS`                                                                                                                                                  |
-| `AUTOMATION_ENGINE`        | Must be set to `XCUITest`                                                                                                                                             |
-| `APP_VERSION`              | Must be set to `15.4`, `14.5`, or which ever iOS version you wish to run within the XCode Simulator                                                                   |
-| `APP_DEVICE`               | Set to iOS device name supported by the iOS Simulator (`iPhone 13 Pro Max`, `iPad Pro (12.9-inch) (5th generation)`, etc.) or name of physically connected iOS device |
-| `DEVICE_TYPE`              | Must be set to `phone` or `tablet`                                                                                                                                    |
-| `APP_UDID`                 | UDID of physically connected iOS device (not used for simulators)                                                                                                     |
-| `TEAM_ID`                  | unique 10-character Apple developer team identifier string (not used for simulators)                                                                                  |
-| `TEAM_NAME`                | String representing a signing certificate (not used for simulators)                                                                                                   |
-| `APP_NO_RESET`             | [Optional] Don't reset app state after each test. Set to `true` or `false`                                                                                            |
-| `APP_FULL_RESET`           | [Optional] Perform a complete reset. Set to `true` or `false`                                                                                                         |
-| `WDA_LOCAL_PORT`           | [Optional] Used to forward traffic from Mac host to real iOS devices over USB. Default value is same as port number used by WDA on device.                            |
-| `LOCALE`                   | [Optional] Locale to set for the simulator.  e.g.  `fr_CA`                                                                                                            |
-| `LANGUAGE`                 | [Optional] Language to set for the simulator.  e.g.  `fr`                                                                                                             |
-| `ORIENTATION`              | [Optional] Set to `portrait` or `landscape` (only for iOS simulators)                                                                                                 |
-| `NEW_COMMAND_TIMEOUT`      | [Optional] Time (in Seconds) that Appium will wait for a new command from the client                                                                                  |
+| **Environment Variable** | **Description**                                                                                                                                                       |
+|--------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `DRIVER`                 | Must be set to `appium`                                                                                                                                               |
+| `APP_PLATFORM_NAME`      | Must be set to `iOS`                                                                                                                                                  |
+| `AUTOMATION_ENGINE`      | Must be set to `XCUITest`                                                                                                                                             |
+| `APP_VERSION`            | Must be set to `15.4`, `14.5`, or which ever iOS version you wish to run within the XCode Simulator                                                                   |
+| `APP_DEVICE`             | Set to iOS device name supported by the iOS Simulator (`iPhone 13 Pro Max`, `iPad Pro (12.9-inch) (5th generation)`, etc.) or name of physically connected iOS device |
+| `DEVICE_TYPE`            | Must be set to `phone` or `tablet`                                                                                                                                    |
+| `APP_UDID`               | UDID of physically connected iOS device (not used for simulators)                                                                                                     |
+| `TEAM_ID`                | unique 10-character Apple developer team identifier string (not used for simulators)                                                                                  |
+| `TEAM_NAME`              | String representing a signing certificate (not used for simulators)                                                                                                   |
+| `APP_NO_RESET`           | [Optional] Don't reset app state after each test. Set to `true` or `false`                                                                                            |
+| `APP_FULL_RESET`         | [Optional] Perform a complete reset. Set to `true` or `false`                                                                                                         |
+| `WDA_LOCAL_PORT`         | [Optional] Used to forward traffic from Mac host to real iOS devices over USB. Default value is same as port number used by WDA on device.                            |
+| `LOCALE`                 | [Optional] Locale to set for the simulator.  e.g.  `fr_CA`                                                                                                            |
+| `LANGUAGE`               | [Optional] Language to set for the simulator.  e.g.  `fr`                                                                                                             |
+| `ORIENTATION`            | [Optional] Set to `portrait` or `landscape` (only for iOS simulators)                                                                                                 |
+| `NEW_COMMAND_TIMEOUT`    | [Optional] Time (in Seconds) that Appium will wait for a new command from the client                                                                                  |
 
 
 Refer to **section 9.5 (Using Configuration Specific Profiles in cucumber.yml)** below.
@@ -917,21 +919,21 @@ to run your features/scenarios.
 
 Once your test environment is properly configured, the following **Environment Variables** must be set as described in the table below.
 
-| **Environment Variable**  | **Description**                                                                                                                |
-|---------------------------|--------------------------------------------------------------------------------------------------------------------------------|
-| `WEB_BROWSER`             | Must be set to `appium`                                                                                                        |
-| `APP_PLATFORM_NAME`       | Must be set to `Android`                                                                                                       |
-| `AUTOMATION_ENGINE`       | Must be set to `UiAutomator2`                                                                                                  |
-| `APP_VERSION`             | Must be set to `12.0`, or which ever Android OS version you wish to run with the Android Virtual Device                        |
-| `APP_DEVICE`              | Set to Android Virtual Device ID (`Pixel_2_XL_API_26`, `Nexus_6_API_23`, etc.) found in Advanced Settings of AVD Configuration |
-| `DEVICE_TYPE`             | Must be set to `phone` or `tablet`                                                                                             |
-| `APP_UDID`                | UDID of physically connected Android device (not used for simulators)                                                          |
-| `ORIENTATION`             | [Optional] Set to `portrait` or `landscape`                                                                                    |
-| `APP_NO_RESET`            | [Optional] Don't reset app state after each test. Set to `true` or `false`                                                     |
-| `APP_FULL_RESET`          | [Optional] Perform a complete reset. Set to `true` or `false`                                                                  |
-| `LOCALE`                  | [Optional] Locale to set for the simulator.  e.g.  `fr_CA`                                                                     |
-| `LANGUAGE`                | [Optional] Language to set for the simulator.  e.g.  `fr`                                                                      |
-| `NEW_COMMAND_TIMEOUT`     | [Optional] Time (in Seconds) that Appium will wait for a new command from the client                                           |
+| **Environment Variable** | **Description**                                                                                                                |
+|--------------------------|--------------------------------------------------------------------------------------------------------------------------------|
+| `DRIVER`                 | Must be set to `appium`                                                                                                        |
+| `APP_PLATFORM_NAME`      | Must be set to `Android`                                                                                                       |
+| `AUTOMATION_ENGINE`      | Must be set to `UiAutomator2`                                                                                                  |
+| `APP_VERSION`            | Must be set to `12.0`, or which ever Android OS version you wish to run with the Android Virtual Device                        |
+| `APP_DEVICE`             | Set to Android Virtual Device ID (`Pixel_2_XL_API_26`, `Nexus_6_API_23`, etc.) found in Advanced Settings of AVD Configuration |
+| `DEVICE_TYPE`            | Must be set to `phone` or `tablet`                                                                                             |
+| `APP_UDID`               | UDID of physically connected Android device (not used for simulators)                                                          |
+| `ORIENTATION`            | [Optional] Set to `portrait` or `landscape`                                                                                    |
+| `APP_NO_RESET`           | [Optional] Don't reset app state after each test. Set to `true` or `false`                                                     |
+| `APP_FULL_RESET`         | [Optional] Perform a complete reset. Set to `true` or `false`                                                                  |
+| `LOCALE`                 | [Optional] Locale to set for the simulator.  e.g.  `fr_CA`                                                                     |
+| `LANGUAGE`               | [Optional] Language to set for the simulator.  e.g.  `fr`                                                                      |
+| `NEW_COMMAND_TIMEOUT`    | [Optional] Time (in Seconds) that Appium will wait for a new command from the client                                           |
 
 
 Refer to **section 9.5 (Using Configuration Specific Profiles in cucumber.yml)** below.
@@ -951,7 +953,7 @@ for information regarding the specific capabilities.
 
 | **Environment Variable** | **Description**                                                                                                                     |
 |--------------------------|-------------------------------------------------------------------------------------------------------------------------------------|
-| `WEB_BROWSER`            | Must be set to `browserstack`                                                                                                       |
+| `DRIVER`                 | Must be set to `browserstack`                                                                                                       |
 | `BS_USERNAME`            | Must be set to your BrowserStack account user name                                                                                  |
 | `BS_AUTHKEY`             | Must be set to your BrowserStack account access key                                                                                 |
 | `BS_OS`                  | Must be set to `ios` or `android`                                                                                                   |
@@ -975,7 +977,7 @@ to obtain information regarding the specific capabilities.
 
 | **Environment Variable** | **Description**                                                                                                 |
 |--------------------------|-----------------------------------------------------------------------------------------------------------------|
-| `WEB_BROWSER`            | Must be set to `saucelabs`                                                                                      |
+| `DRIVER`                 | Must be set to `saucelabs`                                                                                      |
 | `SL_USERNAME`            | Must be set to your Sauce Labs account user name or email address                                               |
 | `SL_AUTHKEY`             | Must be set to your Sauce Labs account access key                                                               |
 | `DATA_CENTER`            | Must be set to your Sauce Labs account Data Center assignment (`us-west-1`, `eu-central-1`, `apac-southeast-1`) |
@@ -996,7 +998,7 @@ for information regarding the specific capabilities.
 
 | **Environment Variable** | **Description**                                   |
 |--------------------------|---------------------------------------------------|
-| `WEB_BROWSER`            | Must be set to `testingbot`                       |
+| `DRIVER`                 | Must be set to `testingbot`                       |
 | `TB_USERNAME`            | Must be set to your TestingBot account user name  |
 | `TB_AUTHKEY`             | Must be set to your TestingBot account access key |
 | `TB_OS`                  | Must be set to `ios` or `android`                 |
@@ -1046,7 +1048,7 @@ code for the cloud service(s) that you intend to connect with.
     # NOTE: Requires installation of XCode, iOS version specific target simulators, and Appium
     #==============
     
-    appium_ios: WEB_BROWSER=appium --profile ios AUTOMATION_ENGINE=XCUITest APP_PLATFORM_NAME="iOS" NEW_COMMAND_TIMEOUT="30" <%= mobile %>
+    appium_ios: DRIVER=appium --profile ios AUTOMATION_ENGINE=XCUITest APP_PLATFORM_NAME="iOS" NEW_COMMAND_TIMEOUT="30" <%= mobile %>
     app_ios_14: --profile appium_ios APP_VERSION="14.5"
     app_ios_15: --profile appium_ios APP_VERSION="15.4"
     
@@ -1061,7 +1063,7 @@ code for the cloud service(s) that you intend to connect with.
     # NOTE: Requires installation of Android Studio, Android version specific virtual device simulators, and Appium
     #==============
     
-    appium_android:    WEB_BROWSER=appium --profile android AUTOMATION_ENGINE=UiAutomator2 APP_PLATFORM_NAME="Android" <%= mobile %>
+    appium_android:    DRIVER=appium --profile android AUTOMATION_ENGINE=UiAutomator2 APP_PLATFORM_NAME="Android" <%= mobile %>
     app_android_12:    --profile appium_android APP_VERSION="12.0"
     pixel_5_api31_sim: --profile app_android_12 DEVICE_TYPE=phone APP_DEVICE="Pixel_5_API_31"
     
@@ -1072,7 +1074,7 @@ code for the cloud service(s) that you intend to connect with.
     #          to your version control system
     #==============
     
-    browserstack: WEB_BROWSER=browserstack BS_USERNAME="<INSERT USER NAME HERE>" BS_AUTHKEY="<INSERT PASSWORD HERE>" TEST_CONTEXT="TestCentricity"
+    browserstack: DRIVER=browserstack BS_USERNAME="<INSERT USER NAME HERE>" BS_AUTHKEY="<INSERT PASSWORD HERE>" TEST_CONTEXT="TestCentricity"
     
     # BrowserStack iOS real device native app profiles
     bs_ios:           --profile browserstack --profile ios BS_OS=ios <%= mobile %>
@@ -1091,7 +1093,7 @@ code for the cloud service(s) that you intend to connect with.
     #          to your version control system
     #==============
     
-    saucelabs: WEB_BROWSER=saucelabs SL_USERNAME="<INSERT USER NAME HERE>" SL_AUTHKEY="<INSERT PASSWORD HERE>" DATA_CENTER="us-west-1" AUTOMATE_PROJECT="TestCentricity - SauceLabs"
+    saucelabs: DRIVER=saucelabs SL_USERNAME="<INSERT USER NAME HERE>" SL_AUTHKEY="<INSERT PASSWORD HERE>" DATA_CENTER="us-west-1" AUTOMATE_PROJECT="TestCentricity - SauceLabs"
     
     # SauceLabs iOS real device native app profiles
     sl_ios:           --profile saucelabs --profile ios SL_OS=ios <%= mobile %>
@@ -1109,7 +1111,7 @@ code for the cloud service(s) that you intend to connect with.
     #          to your version control system
     #==============
     
-    testingbot: WEB_BROWSER=testingbot TB_USERNAME="<INSERT USER NAME HERE>" TB_AUTHKEY="<INSERT PASSWORD HERE>" AUTOMATE_PROJECT="TestCentricity - TestingBot"
+    testingbot: DRIVER=testingbot TB_USERNAME="<INSERT USER NAME HERE>" TB_AUTHKEY="<INSERT PASSWORD HERE>" AUTOMATE_PROJECT="TestCentricity - TestingBot"
     
     # TestingBot iOS real device native app profiles
     tb_ios:               --profile testingbot --profile ios TB_OS=iOS <%= mobile %>

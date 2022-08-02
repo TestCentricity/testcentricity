@@ -6,7 +6,7 @@ describe TestCentricity::AppiumConnect, required: true do
     @environs ||= EnvironData
     @environs.find_environ('LOCAL', :yaml)
     ENV['SELENIUM'] = ''
-    ENV['WEB_BROWSER'] = 'appium'
+    ENV['DRIVER'] = 'appium'
     ENV['DEVICE_TYPE'] = 'phone'
     ENV['LOCALE'] = 'en-US'
     ENV['LANGUAGE'] = 'en'
@@ -24,9 +24,8 @@ describe TestCentricity::AppiumConnect, required: true do
       ENV['APP'] = Environ.current.ios_app_path
       AppiumConnect.initialize_appium
       AppiumConnect.start_driver
-      expect(Environ.browser).to eq(:appium)
-      expect(Environ.platform).to eq(:mobile)
       expect(Environ.driver).to eq(:appium)
+      expect(Environ.platform).to eq(:mobile)
       expect(Environ.device).to eq(:simulator)
       expect(Environ.device_name).to eq('iPhone 13 Pro Max')
       expect(Environ.device_os).to eq(:ios)
@@ -49,9 +48,8 @@ describe TestCentricity::AppiumConnect, required: true do
       }
       AppiumConnect.initialize_appium(capabilities)
       AppiumConnect.start_driver
-      expect(Environ.browser).to eq(:appium)
-      expect(Environ.platform).to eq(:mobile)
       expect(Environ.driver).to eq(:appium)
+      expect(Environ.platform).to eq(:mobile)
       expect(Environ.device).to eq(:simulator)
       expect(Environ.device_name).to eq('iPhone 13 Pro Max')
       expect(Environ.device_os).to eq(:ios)
@@ -68,9 +66,8 @@ describe TestCentricity::AppiumConnect, required: true do
       ENV['APP'] = Environ.current.android_apk_path
       AppiumConnect.initialize_appium
       AppiumConnect.start_driver
-      expect(Environ.browser).to eq(:appium)
-      expect(Environ.platform).to eq(:mobile)
       expect(Environ.driver).to eq(:appium)
+      expect(Environ.platform).to eq(:mobile)
       expect(Environ.device).to eq(:simulator)
       expect(Environ.device_name).to eq('Pixel_5_API_31')
       expect(Environ.device_os).to eq(:android)
@@ -94,9 +91,8 @@ describe TestCentricity::AppiumConnect, required: true do
       }
       AppiumConnect.initialize_appium(capabilities)
       AppiumConnect.start_driver
-      expect(Environ.browser).to eq(:appium)
-      expect(Environ.platform).to eq(:mobile)
       expect(Environ.driver).to eq(:appium)
+      expect(Environ.platform).to eq(:mobile)
       expect(Environ.device).to eq(:simulator)
       expect(Environ.device_name).to eq('Pixel_5_API_31')
       expect(Environ.device_os).to eq(:android)

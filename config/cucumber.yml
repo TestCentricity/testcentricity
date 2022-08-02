@@ -61,7 +61,7 @@ upload_app: UPLOAD_APP=true
 # NOTE: Requires installation of XCode, iOS version specific target simulators, and Appium
 #==============
 
-appium_ios: WEB_BROWSER=appium --profile ios AUTOMATION_ENGINE=XCUITest APP_PLATFORM_NAME="iOS" NEW_COMMAND_TIMEOUT="30" <%= mobile %>
+appium_ios: DRIVER=appium --profile ios AUTOMATION_ENGINE=XCUITest APP_PLATFORM_NAME="iOS" NEW_COMMAND_TIMEOUT="30" <%= mobile %>
 app_ios_14: --profile appium_ios APP_VERSION="14.5"
 app_ios_15: --profile appium_ios APP_VERSION="15.4"
 
@@ -77,7 +77,7 @@ ios_sim:            --profile iphone_13PM_15_sim --profile local --profile run_a
 # NOTE: Requires installation of Android Studio, Android version specific virtual device simulators, and Appium
 #==============
 
-appium_android:    WEB_BROWSER=appium --profile android AUTOMATION_ENGINE=UiAutomator2 APP_PLATFORM_NAME="Android" <%= mobile %>
+appium_android:    DRIVER=appium --profile android AUTOMATION_ENGINE=UiAutomator2 APP_PLATFORM_NAME="Android" <%= mobile %>
 app_android_12:    --profile appium_android APP_VERSION="12.0"
 pixel_5_api31_sim: --profile app_android_12 DEVICE_TYPE=phone APP_DEVICE="Pixel_5_API_31"
 android_sim:       --profile pixel_5_api31_sim --profile local --profile run_appium
@@ -87,7 +87,7 @@ android_sim:       --profile pixel_5_api31_sim --profile local --profile run_app
 # profiles for remotely hosted devices on the BrowserStack service
 #==============
 
-browserstack: WEB_BROWSER=browserstack BS_USERNAME="<INSERT USER NAME HERE>" BS_AUTHKEY="<INSERT PASSWORD HERE>" TEST_CONTEXT="TestCentricity"
+browserstack: DRIVER=browserstack TEST_CONTEXT="TestCentricity - BrowserStack"
 
 # BrowserStack iOS real device native app profiles
 bs_ios:           --profile browserstack --profile ios BS_OS=ios <%= mobile %>
@@ -104,7 +104,7 @@ bs_pixel5:  --profile bs_android BS_DEVICE="Google Pixel 5" BS_OS_VERSION="12.0"
 # profiles for remotely hosted devices on the SauceLabs service
 #==============
 
-saucelabs: WEB_BROWSER=saucelabs SL_USERNAME="<INSERT USER NAME HERE>" SL_AUTHKEY="<INSERT PASSWORD HERE>" DATA_CENTER="us-west-1" AUTOMATE_PROJECT="TestCentricity - SauceLabs"
+saucelabs: DRIVER=saucelabs DATA_CENTER="us-west-1" AUTOMATE_PROJECT="TestCentricity - SauceLabs"
 
 # SauceLabs iOS real device native app profiles
 sl_ios:           --profile saucelabs --profile ios SL_OS=ios <%= mobile %>
@@ -120,7 +120,7 @@ sl_pixel5:  --profile sl_android SL_DEVICE="Google Pixel 5 GoogleAPI Emulator" S
 # profiles for remotely hosted devices on the TestingBot service
 #==============
 
-testingbot: WEB_BROWSER=testingbot TB_USERNAME="<INSERT USER NAME HERE>" TB_AUTHKEY="<INSERT PASSWORD HERE>" AUTOMATE_PROJECT="TestCentricity - TestingBot"
+testingbot: DRIVER=testingbot AUTOMATE_PROJECT="TestCentricity - TestingBot"
 
 # TestingBot iOS real device native app profiles
 tb_ios:               --profile testingbot --profile ios TB_OS=iOS <%= mobile %>
@@ -139,7 +139,7 @@ tb_pixel6_sim: --profile tb_android TB_DEVICE="Pixel 6" TB_OS_VERSION="12.0" DEV
 # profiles for remotely hosted devices on the LambdaTest service
 #==============
 
-lambdatest: WEB_BROWSER=lambdatest LT_USERNAME="<INSERT USER NAME HERE>" LT_AUTHKEY="<INSERT PASSWORD HERE>" AUTOMATE_PROJECT="TestCentricity - LambdaTest"
+lambdatest: DRIVER=lambdatest AUTOMATE_PROJECT="TestCentricity - LambdaTest"
 
 # LambdaTest iOS real device native app profiles
 lt_ios:    --profile lambdatest --profile ios LT_OS=iOS <%= mobile %>
