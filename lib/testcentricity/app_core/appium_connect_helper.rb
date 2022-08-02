@@ -18,14 +18,12 @@ module TestCentricity
         @capabilities = options[:desired_capabilities] if options.key?(:desired_capabilities)
       end
       Environ.platform = :mobile
-      Environ.driver = :appium
       Environ.device_type = ENV['DEVICE_TYPE'] if ENV['DEVICE_TYPE']
 
       Environ.device_orientation = ENV['ORIENTATION'] if ENV['ORIENTATION']
       Environ.device_os_version = ENV['APP_VERSION']
-      browser = ENV['WEB_BROWSER']
-      Environ.browser = browser
-      case browser.downcase.to_sym
+      Environ.driver = ENV['DRIVER'].downcase.to_sym
+      case Environ.driver
       when :appium
         Environ.device_name = ENV['APP_DEVICE']
         Environ.device_os = ENV['APP_PLATFORM_NAME']
@@ -47,14 +45,13 @@ module TestCentricity
         Environ.device_name = ENV['LT_DEVICE']
         Environ.device_os = ENV['LT_OS']
       else
-        raise "#{browser} is not a valid selector"
+        raise "#{Environ.driver} is not a valid selector"
       end
       @running = false
     end
 
     def self.start_driver
-      browser = Environ.browser
-      capabilities = case browser.downcase.to_sym
+      capabilities = case Environ.driver
                      when :appium
                        appium_local_capabilities
                      when :browserstack
@@ -66,7 +63,7 @@ module TestCentricity
                      when :lambdatest
                        lambdatest_capabilities
                      else
-                       raise "#{browser} is not a valid selector"
+                       raise "#{Environ.driver} is not a valid selector"
                      end
       puts "Appium desired_capabilities = #{capabilities}" if ENV['DEBUG']
 
