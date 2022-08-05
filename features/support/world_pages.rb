@@ -14,6 +14,7 @@ module WorldPages
       about_screen:            AboutScreen,
       login_screen:            LoginScreen,
       webview_screen:          WebViewScreen,
+      web_page_screen:         WebPageViewerScreen,
       products_screen:         ProductsScreen,
       product_item_screen:     ProductItemScreen,
       cart_screen:             CartScreen,

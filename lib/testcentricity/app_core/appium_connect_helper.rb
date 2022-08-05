@@ -190,7 +190,7 @@ module TestCentricity
     end
 
     def self.webview_context
-      contexts = available_contexts
+      contexts = $driver.available_contexts
       puts "Contexts = #{contexts}" if ENV['DEBUG']
       set_context(contexts.last)
       puts "Current context = #{$driver.current_context}" if ENV['DEBUG']
@@ -282,6 +282,7 @@ module TestCentricity
         caps[:xcodeSigningId] = ENV['TEAM_NAME'] if ENV['TEAM_NAME']
         caps[:appActivity] = ENV['APP_ACTIVITY'] if ENV['APP_ACTIVITY']
         caps[:appPackage] = ENV['APP_PACKAGE'] if ENV['APP_PACKAGE']
+        caps[:webviewConnectTimeout] = '90000'
 
         if ENV['BUNDLE_ID']
           caps[:bundleId] = ENV['BUNDLE_ID']

@@ -2,6 +2,13 @@
 All notable changes to this project will be documented in this file.
 
 
+## [3.1.1] - 04-AUGUST-2022
+
+### Fixed
+* `AppiumConnect.available_contexts` now correctly returns a list of native app and web contexts when testing hybrid apps 
+with WebViews on iOS simulators.
+
+
 ## [3.1.0] - 02-AUGUST-2022
 
 ### Added
@@ -11,7 +18,10 @@ All notable changes to this project will be documented in this file.
 * ### Changed
 * The `WEB_BROWSER` Environment Variable is no longer used to specify the `appium`, `browserstack`, `saucelabs`, `testingbot`,
   or `lambdatest` driver.
-* TestCentricity now supports and integrates with Selenium-Webdriver version 4.3.
+
+### Updated
+* Incorporated all changes from the [TestCentricity™ Web gem](https://rubygems.org/gems/testcentricity_web) version 4.3.0, which is
+  bundled with this gem.
 
 
 ## [3.0.6] - 21-JUNE-2022
@@ -24,7 +34,7 @@ hierarchy is `//android.widget.Button/android.widget.ViewGroup/android.widget.Te
 ## [3.0.5] - 12-JUNE-2022
 
 ### Fixed
-* Fix `gemspec` to no longer include specs and cuke tests as part of deployment package for gem.
+* Fixed `gemspec` to no longer include specs and Cucumber tests as part of deployment package for the gem.
 
 ### Updated
 * Incorporated all changes from the [TestCentricity™ Web gem](https://rubygems.org/gems/testcentricity_web) version 4.2.6, which is

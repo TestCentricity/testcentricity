@@ -73,7 +73,8 @@ When(/^I choose product item (.*) in the products grid$/) do |product_id|
   products_screen.choose_product_item(product_id)
 end
 
-And(/^the shopping cart is (.*)$/) do |state|
+
+Then(/^the shopping cart is (.*)$/) do |state|
   case state.downcase.to_sym
   when :full, :populated
     cart_data_source.load_cart
@@ -82,4 +83,9 @@ And(/^the shopping cart is (.*)$/) do |state|
   else
     raise "#{state} is not a valid selector"
   end
+end
+
+
+When(/^I enter the url for the Apple web site$/) do
+  webview_screen.load_web_site
 end
