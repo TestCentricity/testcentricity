@@ -1,8 +1,8 @@
-<% desktop = "--require features BROWSER_TILE=true BROWSER_SIZE=1300,1000 --publish-quiet" %>
-<% mobile  = "--require features --publish-quiet" %>
-<% reports = "--require features --format pretty --format html --out reports/test_results.html --format junit --out reports --format json --out reports/test_results.json" %>
-<% regression = "--tags '@regression and (not @wip and not @failing)' --require features" %>
-<% acceptance = "--tags '@bat and (not @wip and not @failing)' --require features" %>
+  <% desktop = "--require features BROWSER_TILE=true BROWSER_SIZE=1300,1000 --publish-quiet" %>
+  <% mobile  = "--require features --publish-quiet" %>
+  <% reports = "--require features --format pretty --format html --out reports/test_results.html --format junit --out reports --format json --out reports/test_results.json" %>
+  <% regression = "--tags '@regression and (not @wip and not @failing)' --require features" %>
+  <% acceptance = "--tags '@bat and (not @wip and not @failing)' --require features" %>
 
 
 #==============
@@ -78,7 +78,7 @@ ios_sim:            --profile iphone_13PM_15_sim --profile local --profile run_a
 #==============
 
 appium_android:    DRIVER=appium --profile android AUTOMATION_ENGINE=UiAutomator2 APP_PLATFORM_NAME="Android" <%= mobile %>
-app_android_12:    --profile appium_android APP_VERSION="12.0"
+app_android_12:    --profile appium_android APP_VERSION="12.0" CHROMEDRIVER_EXECUTABLE="/Users/Shared/config/webdrivers/chromedriver"
 pixel_5_api31_sim: --profile app_android_12 DEVICE_TYPE=phone APP_DEVICE="Pixel_5_API_31"
 android_sim:       --profile pixel_5_api31_sim --profile local --profile run_appium
 

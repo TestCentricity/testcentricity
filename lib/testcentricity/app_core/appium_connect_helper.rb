@@ -33,6 +33,7 @@ module TestCentricity
         Environ.device_os = ENV['BS_OS']
         Environ.device = :device
         upload_app(:browserstack) if ENV['UPLOAD_APP']
+        # :nocov:
       when :saucelabs
         Environ.device_name = ENV['SL_DEVICE']
         Environ.device_os = ENV['SL_OS']
@@ -46,6 +47,7 @@ module TestCentricity
         Environ.device_os = ENV['LT_OS']
       else
         raise "#{Environ.driver} is not a valid selector"
+        # :nocov:
       end
       @running = false
     end
@@ -56,6 +58,7 @@ module TestCentricity
                        appium_local_capabilities
                      when :browserstack
                        browserstack_capabilities
+                       # :nocov:
                      when :saucelabs
                        sauce_capabilities
                      when :testingbot
@@ -64,6 +67,7 @@ module TestCentricity
                        lambdatest_capabilities
                      else
                        raise "#{Environ.driver} is not a valid selector"
+                       # :nocov:
                      end
       puts "Appium desired_capabilities = #{capabilities}" if ENV['DEBUG']
 
@@ -250,48 +254,48 @@ module TestCentricity
       if @capabilities.nil?
         caps = {
           platformName: ENV['APP_PLATFORM_NAME'],
-          platformVersion: ENV['APP_VERSION'],
-          deviceName: ENV['APP_DEVICE'],
-          automationName: ENV['AUTOMATION_ENGINE']
+          'appium:platformVersion': ENV['APP_VERSION'],
+          'appium:deviceName': ENV['APP_DEVICE'],
+          'appium:automationName': ENV['AUTOMATION_ENGINE']
         }
-        caps[:avd] = ENV['APP_DEVICE'] if ENV['APP_PLATFORM_NAME'].downcase.to_sym == :android
-        caps[:orientation] = ENV['ORIENTATION'].upcase if ENV['ORIENTATION']
-        caps[:language] = ENV['LANGUAGE'] if ENV['LANGUAGE']
+        caps[:'appium:avd'] = ENV['APP_DEVICE'] if ENV['APP_PLATFORM_NAME'].downcase.to_sym == :android
+        caps[:'appium:orientation'] = ENV['ORIENTATION'].upcase if ENV['ORIENTATION']
+        caps[:'appium:language'] = ENV['LANGUAGE'] if ENV['LANGUAGE']
         if ENV['LOCALE']
-          caps[:locale] = if Environ.is_android?
+          caps[:'appium:locale'] = if Environ.is_android?
                             locale = ENV['LOCALE'].gsub('-', '_')
                             locale.split('_')[1]
                           else
                             ENV['LOCALE'].gsub('-', '_')
                           end
         end
-        caps[:newCommandTimeout] = ENV['NEW_COMMAND_TIMEOUT'] if ENV['NEW_COMMAND_TIMEOUT']
-        caps[:noReset] = ENV['APP_NO_RESET'] if ENV['APP_NO_RESET']
-        caps[:fullReset] = ENV['APP_FULL_RESET'] if ENV['APP_FULL_RESET']
-        caps[:autoLaunch] = ENV['AUTO_LAUNCH'] if ENV['AUTO_LAUNCH']
-        caps[:webkitDebugProxyPort] = ENV['WEBKIT_DEBUG_PROXY_PORT'] if ENV['WEBKIT_DEBUG_PROXY_PORT']
-        caps[:webDriverAgentUrl] = ENV['WEBDRIVER_AGENT_URL'] if ENV['WEBDRIVER_AGENT_URL']
-        caps[:wdaLocalPort] = ENV['WDA_LOCAL_PORT'] if ENV['WDA_LOCAL_PORT']
-        caps[:usePrebuiltWDA] = ENV['USE_PREBUILT_WDA'] if ENV['USE_PREBUILT_WDA']
-        caps[:useNewWDA] = ENV['USE_NEW_WDA'] if ENV['USE_NEW_WDA']
-        caps[:autoWebview] = ENV['AUTO_WEBVIEW'] if ENV['AUTO_WEBVIEW']
-        caps[:chromedriverExecutable] = ENV['CHROMEDRIVER_EXECUTABLE'] if ENV['CHROMEDRIVER_EXECUTABLE']
-        caps[:autoWebviewTimeout] = ENV['AUTO_WEBVIEW_TIMEOUT'] if ENV['AUTO_WEBVIEW_TIMEOUT']
-        caps[:udid] = ENV['UDID'] if ENV['UDID']
-        caps[:xcodeOrgId] = ENV['TEAM_ID'] if ENV['TEAM_ID']
-        caps[:xcodeSigningId] = ENV['TEAM_NAME'] if ENV['TEAM_NAME']
-        caps[:appActivity] = ENV['APP_ACTIVITY'] if ENV['APP_ACTIVITY']
-        caps[:appPackage] = ENV['APP_PACKAGE'] if ENV['APP_PACKAGE']
-        caps[:webviewConnectTimeout] = '90000'
+        caps[:'appium:newCommandTimeout'] = ENV['NEW_COMMAND_TIMEOUT'] if ENV['NEW_COMMAND_TIMEOUT']
+        caps[:'appium:noReset'] = ENV['APP_NO_RESET'] if ENV['APP_NO_RESET']
+        caps[:'appium:fullReset'] = ENV['APP_FULL_RESET'] if ENV['APP_FULL_RESET']
+        caps[:'appium:autoLaunch'] = ENV['AUTO_LAUNCH'] if ENV['AUTO_LAUNCH']
+        caps[:'appium:webkitDebugProxyPort'] = ENV['WEBKIT_DEBUG_PROXY_PORT'] if ENV['WEBKIT_DEBUG_PROXY_PORT']
+        caps[:'appium:webDriverAgentUrl'] = ENV['WEBDRIVER_AGENT_URL'] if ENV['WEBDRIVER_AGENT_URL']
+        caps[:'appium:wdaLocalPort'] = ENV['WDA_LOCAL_PORT'] if ENV['WDA_LOCAL_PORT']
+        caps[:'appium:usePrebuiltWDA'] = ENV['USE_PREBUILT_WDA'] if ENV['USE_PREBUILT_WDA']
+        caps[:'appium:useNewWDA'] = ENV['USE_NEW_WDA'] if ENV['USE_NEW_WDA']
+        caps[:'appium:autoWebview'] = ENV['AUTO_WEBVIEW'] if ENV['AUTO_WEBVIEW']
+        caps[:'appium:chromedriverExecutable'] = ENV['CHROMEDRIVER_EXECUTABLE'] if ENV['CHROMEDRIVER_EXECUTABLE']
+        caps[:'appium:autoWebviewTimeout'] = ENV['AUTO_WEBVIEW_TIMEOUT'] if ENV['AUTO_WEBVIEW_TIMEOUT']
+        caps[:'appium:udid'] = ENV['UDID'] if ENV['UDID']
+        caps[:'appium:xcodeOrgId'] = ENV['TEAM_ID'] if ENV['TEAM_ID']
+        caps[:'appium:xcodeSigningId'] = ENV['TEAM_NAME'] if ENV['TEAM_NAME']
+        caps[:'appium:appActivity'] = ENV['APP_ACTIVITY'] if ENV['APP_ACTIVITY']
+        caps[:'appium:appPackage'] = ENV['APP_PACKAGE'] if ENV['APP_PACKAGE']
+        caps[:'appium:webviewConnectTimeout'] = '90000'
 
         if ENV['BUNDLE_ID']
-          caps[:bundleId] = ENV['BUNDLE_ID']
+          caps[:'appium:bundleId'] = ENV['BUNDLE_ID']
         else
           app_id = get_app_id
-          caps[:bundleId] = app_id unless app_id.nil?
+          caps[:'appium:bundleId'] = app_id unless app_id.nil?
         end
 
-        caps[:app] = if ENV['APP']
+        caps[:'appium:app'] = if ENV['APP']
                        ENV['APP']
                      else
                        if Environ.is_android?
@@ -308,7 +312,6 @@ module TestCentricity
       end
     end
 
-    # :nocov:
     def self.browserstack_capabilities
       # specify endpoint url
       @endpoint = 'http://hub-cloud.browserstack.com/wd/hub' if @endpoint.nil?
@@ -358,6 +361,8 @@ module TestCentricity
                 end
       options
     end
+
+    # :nocov:
 
     def self.sauce_capabilities
       # specify endpoint url

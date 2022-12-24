@@ -7,10 +7,12 @@ require 'testcentricity'
 require 'testcentricity_web'
 
 require_rel 'fixtures'
+require_rel 'support'
 
 include TestCentricity
 
 SimpleCov.command_name("RSpec-#{Time.now.strftime('%Y%m%d%H%M%S')}")
+SimpleCov.merge_timeout 7200
 
 $LOAD_PATH << './lib'
 

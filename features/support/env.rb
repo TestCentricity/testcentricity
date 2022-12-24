@@ -10,6 +10,8 @@ require 'testcentricity'
 include TestCentricity
 
 SimpleCov.command_name("Features-#{ENV['PLATFORM']}-#{Time.now.strftime('%Y%m%d%H%M%S%L')}")
+SimpleCov.merge_timeout 7200
+
 
 require_relative 'world_data'
 require_relative 'world_pages'

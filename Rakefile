@@ -19,6 +19,12 @@ RSpec::Core::RakeTask.new(:web_specs) do |t|
 end
 
 
+desc 'Run BrowserStack specs'
+RSpec::Core::RakeTask.new(:browserstack_specs) do |t|
+  t.rspec_opts = '--tag browserstack'
+end
+
+
 desc 'Run Cucumber features on iOS simulator'
 Cucumber::Rake::Task.new(:ios_sim) do |t|
   t.profile = 'ios_sim'
@@ -36,11 +42,11 @@ task required: [:required_specs, :android_sim, :ios_sim]
 
 
 desc 'Run all specs'
-task all_specs: [:required_specs, :web_specs]
+task all_specs: [:required_specs, :web_specs, :browserstack_specs]
 
 
 desc 'Run all specs and Cucumber features'
-task all: [:required_specs, :web_specs, :android_sim, :ios_sim]
+task all: [:all_specs, :ios_sim, :android_sim]
 
 
 desc 'Update HTML docs'

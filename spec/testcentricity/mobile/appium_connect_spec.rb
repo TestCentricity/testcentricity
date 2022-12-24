@@ -41,10 +41,10 @@ describe TestCentricity::AppiumConnect, required: true do
 
       capabilities = {
         platformName: 'ios',
-        platformVersion: '15.4',
-        deviceName: 'iPhone 13 Pro Max',
-        automationName: 'XCUITest',
-        app: Environ.current.ios_app_path
+        'appium:platformVersion': '15.4',
+        'appium:deviceName': 'iPhone 13 Pro Max',
+        'appium:automationName': 'XCUITest',
+        'appium:app': Environ.current.ios_app_path
       }
       AppiumConnect.initialize_appium(capabilities)
       AppiumConnect.start_driver
@@ -83,11 +83,11 @@ describe TestCentricity::AppiumConnect, required: true do
 
       capabilities = {
         platformName: 'Android',
-        platformVersion: '12.0',
-        deviceName: 'Pixel_5_API_31',
-        automationName: 'UiAutomator2',
-        avd: 'Pixel_5_API_31',
-        app: Environ.current.android_apk_path
+        'appium:platformVersion': '12.0',
+        'appium:deviceName': 'Pixel_5_API_31',
+        'appium:automationName': 'UiAutomator2',
+        'appium:avd': 'Pixel_5_API_31',
+        'appium:app': Environ.current.android_apk_path
       }
       AppiumConnect.initialize_appium(capabilities)
       AppiumConnect.start_driver
